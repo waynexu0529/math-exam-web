@@ -236,11 +236,113 @@ function bindGameEvents() {
     // 章节导航事件
     bindChapterEvents();
     
-    // 比赛事件
-    bindRaceEvents();
-    
     // 改装事件
     bindUpgradeEvents();
+    
+    // 比赛和碰撞测试事件
+    bindRaceAndTestEvents();
+}
+
+// 绑定比赛和测试事件
+function bindRaceAndTestEvents() {
+    // 比赛按钮
+    const startRaceBtn = document.getElementById('startRaceBtn');
+    if (startRaceBtn) {
+        startRaceBtn.addEventListener('click', startRace);
+    }
+    
+    // 碰撞测试按钮
+    const startCollisionTestBtn = document.getElementById('startCollisionTestBtn');
+    if (startCollisionTestBtn) {
+        startCollisionTestBtn.addEventListener('click', startCollisionTest);
+    }
+}
+
+// 开始碰撞测试
+function startCollisionTest() {
+    if (!GameState.selectedCar) {
+        alert('请先选择一辆汽车！');
+        return;
+    }
+    
+    // 计算碰撞测试结果
+    const collisionResult = calculateCollisionResult();
+    
+    // 显示碰撞测试结果
+    showCollisionResult(collisionResult);
+    
+    // 保存游戏数据
+    saveGameData();
+}
+
+// 计算碰撞测试结果
+function calculateCollisionResult() {
+    const car = GameState.selectedCar;
+    
+    // 基础耐久度
+    let durability = car.attributes.durability;
+    
+    // 零件加成
+    if (car.parts.brakes) {
+        durability += car.parts.brakes.safety * 2;
+    }
+    
+    if (car.parts.suspension) {
+        durability += car.parts.suspension.comfort * 1.5;
+    }
+    
+    // 随机因素
+    const randomFactor = 0.7 + Math.random() * 0.6;
+    const finalDurability = Math.round(durability * randomFactor);
+    
+    // 评估安全等级
+    let safetyLevel = '基础';
+    if (finalDurability > 80) safetyLevel = '优秀';
+    else if (finalDurability > 60) safetyLevel = '良好';
+    else if (finalDurability > 40) safetyLevel = '一般';
+    else safetyLevel = '需要改进';
+    
+    return {
+        durability: finalDurability,
+        safetyLevel: safetyLevel,
+        carName: car.name,
+        parts: car.parts,
+        timestamp: new Date().toISOString()
+    };
+}
+
+// 显示碰撞测试结果
+function showCollisionResult(result) {
+    const collisionResult = document.getElementById('collisionResult');
+    if (collisionResult) {
+        const resultHTML = `
+            <div class="collision-test-result">
+                <h4>碰撞测试结果</h4>
+                <div class="result-details">
+                    <p>汽车: ${result.carName}</p>
+                    <p>耐久度: ${result.durability}/100</p>
+                    <p>安全等级: ${result.safetyLevel}</p>
+                    <p>测试时间: ${new Date(result.timestamp).toLocaleString()}</p>
+                </div>
+                <div class="safety-advice">
+                    <p>${getSafetyAdvice(result.safetyLevel)}</p>
+                </div>
+            </div>
+        `;
+        collisionResult.innerHTML = resultHTML;
+    }
+}
+
+// 获取安全建议
+function getSafetyAdvice(safetyLevel) {
+    const advice = {
+        '优秀': '✅ 您的赛车安全性能非常优秀！可以安全参加比赛。',
+        '良好': '✅ 安全性能良好，建议继续升级刹车和悬挂系统。',
+        '一般': '⚠️ 安全性能一般，强烈建议升级安全相关零件。',
+        '基础': '❌ 安全性能需要改进，请先升级刹车系统。',
+        '需要改进': '❌ 安全性能较差，建议全面升级安全零件。'
+    };
+    return advice[safetyLevel] || '请进行安全升级。';
 }
 
 // 绑定汽车选择事件
@@ -499,7 +601,7 @@ function updateCarSelectionUI() {
                         <p>速度: ${car.attributes.speed}</p>
                         <p>操控: ${car.attributes.handling}</p>
                     </div>
-                    <button class="btn btn-sm ${car.unlocked ? 'btn-primary' : 'btn-disabled'}" 
+                    <button class="btn btn-sm ${car.unlocked ? 'btn-primary' : 'btn-disabled'} car-select-btn" 
                             data-car-id="${car.id}"
                             ${car.unlocked ? '' : 'disabled'}>
                         ${car.selected ? '已选择' : (car.unlocked ? '选择' : '未解锁')}
@@ -538,7 +640,7 @@ function updateChapterUI() {
                         <p>要求分数: ${chapter.requiredScore}</p>
                         <p>奖励: ${chapter.reward}</p>
                     </div>
-                    <button class="btn btn-sm ${chapter.unlocked ? 'btn-primary' : 'btn-disabled'}" 
+                    <button class="btn btn-sm ${chapter.unlocked ? 'btn-primary' : 'btn-disabled'} start-chapter-btn" 
                             data-chapter-id="${chapter.id}"
                             ${chapter.unlocked ? '' : 'disabled'}>
                         ${chapter.completed ? '已完成' : (chapter.unlocked ? '开始' : '未解锁')}

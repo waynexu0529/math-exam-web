@@ -154,22 +154,39 @@ function bindEvents() {
     // 功能卡片点击事件
     const startExamBtn = document.getElementById('startExam');
     if (startExamBtn) {
-        startExamBtn.addEventListener('click', () => startExam(10)); // 10道题
+        startExamBtn.addEventListener('click', (e) => {
+            // 检查点击的是否是按钮
+            if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+                startExam(10); // 10道题
+            }
+        });
     }
     
     const dailyPracticeBtn = document.getElementById('dailyPractice');
     if (dailyPracticeBtn) {
-        dailyPracticeBtn.addEventListener('click', () => startDailyPractice());
+        dailyPracticeBtn.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+                startDailyPractice();
+            }
+        });
     }
     
     const viewReportBtn = document.getElementById('viewReport');
     if (viewReportBtn) {
-        viewReportBtn.addEventListener('click', showLearningReport);
+        viewReportBtn.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+                showLearningReport();
+            }
+        });
     }
     
     const wrongQuestionsBtn = document.getElementById('wrongQuestions');
     if (wrongQuestionsBtn) {
-        wrongQuestionsBtn.addEventListener('click', showWrongQuestions);
+        wrongQuestionsBtn.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+                showWrongQuestions();
+            }
+        });
     }
     
     // 点击模态框外部关闭
@@ -255,8 +272,8 @@ function startExam(questionCount = 10) {
     // 保存考试状态
     localStorage.setItem('currentExam', JSON.stringify(AppState.currentExam));
     
-    // 跳转到考试页面（这里先模拟）
-    showExamPage();
+    // 跳转到考试页面
+    window.location.href = 'exam.html';
     
     console.log('开始考试:', AppState.currentExam);
 }
@@ -279,8 +296,8 @@ function showLearningReport() {
         return;
     }
     
-    // 这里应该跳转到报告页面
-    alert('学习报告功能正在开发中...');
+    // 跳转到报告页面
+    window.location.href = 'report.html';
     
     // 模拟报告数据
     const reportData = {
@@ -310,9 +327,9 @@ function showWrongQuestions() {
         return;
     }
     
-    alert(`您有 ${wrongQuestions.length} 道错题需要复习`);
+    // 跳转到错题本页面（暂时跳转到报告页面）
+    window.location.href = 'report.html?tab=wrong';
     
-    // 这里应该跳转到错题本页面
     console.log('错题本:', wrongQuestions);
 }
 
