@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>功能测试 - 数学小博士汽车闯关游戏</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/exam-report.css">
+    <link rel="stylesheet" href="css/game.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .test-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+        
+        .test-section {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        }
+        
+        .test-result {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        
+        .test-pass {
+            background: #d9f7be;
+            color: #52c41a;
+            border: 2px solid #52c41a;
+        }
+        
+        .test-fail {
+            background: #ffccc7;
+            color: #f5222d;
+            border: 2px solid #f5222d;
+        }
+        
+        .test-warning {
+            background: #fff7e6;
+            color: #fa8c16;
+            border: 2px solid #fa8c16;
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .test-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .test-btn {
+            margin-top: 1rem;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-vial"></i>
+                <span>功能测试中心</span>
+            </div>
+            <div class="nav-user">
+                <a href="index.html" class="btn btn-outline">
+                    <i class="fas fa-home"></i>返回首页
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="test-container">
+        <h1>🧪 数学小博士汽车闯关游戏 - 功能测试</h1>
+        <p class="subtitle">全面测试所有功能模块，确保公网部署前一切正常</p>
+        
+        <!-- 文件完整性测试 -->
+        <section class="test-section">
+            <h2><i class="fas fa-file-alt"></i> 文件完整性测试</h2>
+            <div id="fileTestResult" class="test-result">等待测试...</div>
+            <button id="testFilesBtn" class="btn btn-primary">
+                <i class="fas fa-play"></i> 开始文件测试
+            </button>
+        </section>
+        
+        <!-- 页面链接测试 -->
+        <section class="test-section">
+            <h2><i class="fas fa-link"></i> 页面链接测试</h2>
+            <div class="test-grid">
+                <div class="test-card">
+                    <h3>首页测试</h3>
+                    <p>测试主页面加载和用户登录</p>
+                    <a href="index.html" target="_blank" class="btn btn-primary test-btn">
+                        <i class="fas fa-external-link-alt"></i> 测试首页
+                    </a>
+                </div>
+                <div class="test-card">
+                    <h3>游戏页面测试</h3>
+                    <p>测试汽车闯关游戏功能</p>
+                    <a href="game.html" target="_blank" class="btn btn-primary test-btn">
+                        <i class="fas fa-external-link-alt"></i> 测试游戏
+                    </a>
+                </div>
+                <div class="test-card">
+                    <h3>考试页面测试</h3>
+                    <p>测试数学考试功能</p>
+                    <a href="exam.html" target="_blank" class="btn btn-primary test-btn">
+                        <i class="fas fa-external-link-alt"></i> 测试考试
+                    </a>
+                </div>
+                <div class="test-card">
+                    <h3>报告页面测试</h3>
+                    <p>测试学习报告功能</p>
+                    <a href="report.html" target="_blank" class="btn btn-primary test-btn">
+                        <i class="fas fa-external-link-alt"></i> 测试报告
+                    </a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- JavaScript功能测试 -->
+        <section class="test-section">
+            <h2><i class="fas fa-code"></i> JavaScript功能测试</h2>
+            <div id="jsTestResult" class="test-result">等待测试...</div>
+            <div class="test-grid">
+                <div class="test-card">
+                    <h3>用户系统测试</h3>
+                    <p>测试本地存储和用户管理</p>
+                    <button id="testUserSystem" class="btn btn-primary test-btn">
+                        <i class="fas fa-user"></i> 测试用户系统
+                    </button>
+                </div>
+                <div class="test-card">
+                    <h3>题库系统测试</h3>
+                    <p>测试数学题库加载</p>
+                    <button id="testQuestionBank" class="btn btn-primary test-btn">
+                        <i class="fas fa-book"></i> 测试题库
+                    </button>
+                </div>
+                <div class="test-card">
+                    <h3>游戏系统测试</h3>
+                    <p>测试汽车游戏功能</p>
+                    <button id="testGameSystem" class="btn btn-primary test-btn">
+                        <i class="fas fa-gamepad"></i> 测试游戏系统
+                    </button>
+                </div>
+                <div class="test-card">
+                    <h3>报告系统测试</h3>
+                    <p>测试学习报告生成</p>
+                    <button id="testReportSystem" class="btn btn-primary test-btn">
+                        <i class="fas fa-chart-bar"></i> 测试报告系统
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 部署测试 -->
+        <section class="test-section">
+            <h2><i class="fas fa-rocket"></i> 部署准备测试</h2>
+            <div id="deployTestResult" class="test-result">等待测试...</div>
+            <div class="test-grid">
+                <div class="test-card">
+                    <h3>Git状态检查</h3>
+                    <p>检查代码提交状态</p>
+                    <button id="testGitStatus" class="btn btn-primary test-btn">
+                        <i class="fas fa-code-branch"></i> 检查Git
+                    </button>
+                </div>
+                <div class="test-card">
+                    <h3>文件大小检查</h3>
+                    <p>检查文件大小是否合适</p>
+                    <button id="testFileSize" class="btn btn-primary test-btn">
+                        <i class="fas fa-weight"></i> 检查文件大小
+                    </button>
+                </div>
+                <div class="test-card">
+                    <h3>外部依赖检查</h3>
+                    <p>检查外部资源加载</p>
+                    <button id="testDependencies" class="btn btn-primary test-btn">
+                        <i class="fas fa-network-wired"></i> 检查依赖
+                    </button>
+                </div>
+                <div class="test-card">
+                    <h3>生成测试报告</h3>
+                    <p>生成完整测试报告</p>
+                    <button id="generateReport" class="btn btn-success test-btn">
+                        <i class="fas fa-file-download"></i> 生成报告
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 测试结果汇总 -->
+        <section class="test-section">
+            <h2><i class="fas fa-clipboard-check"></i> 测试结果汇总</h2>
+            <div id="testSummary">
+                <p>等待测试完成...</p>
+            </div>
+            <div class="test-grid">
+                <div class="test-card">
+                    <h3>总体状态</h3>
+                    <div id="overallStatus" style="font-size: 2rem; margin: 1rem 0;">⏳</div>
+                    <p id="overallMessage">测试进行中...</p>
+                </div>
+                <div class="test-card">
+                    <h3>通过测试</h3>
+                    <div id="passedTests" style="font-size: 2rem; margin: 1rem 0; color: #52c41a;">0</div>
+                    <p>个测试通过</p>
+                </div>
+                <div class="test-card">
+                    <h3>失败测试</h3>
+                    <div id="failedTests" style="font-size: 2rem; margin: 1rem 0; color: #f5222d;">0</div>
+                    <p>个测试失败</p>
+                </div>
+                <div class="test-card">
+                    <h3>建议操作</h3>
+                    <div id="suggestions" style="margin: 1rem 0;">
+                        <p>完成所有测试后查看建议</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script>
+        // 测试状态跟踪
+        const testResults = {
+            passed: 0,
+            failed: 0,
+            warnings: 0,
+            tests: []
+        };
+        
+        // 更新测试结果
+        function updateTestResults() {
+            document.getElementById('passedTests').textContent = testResults.passed;
+            document.getElementById('failedTests').textContent = testResults.failed;
+            
+            const totalTests = testResults.passed + testResults.failed + testResults.warnings;
+            
+            if (totalTests === 0) {
+                document.getElementById('overallStatus').textContent = '⏳';
+                document.getElementById('overallMessage').textContent = '测试进行中...';
+            } else if (testResults.failed === 0) {
+                document.getElementById('overallStatus').textContent = '✅';
+                document.getElementById('overallMessage').textContent = '所有测试通过！';
+            } else {
+                document.getElementById('overallStatus').textContent = '⚠️';
+                document.getElementById('overallMessage').textContent = `${testResults.failed} 个测试失败`;
+            }
+        }
+        
+        // 文件完整性测试
+        document.getElementById('testFilesBtn').addEventListener('click', function() {
+            const requiredFiles = [
+                'index.html',
+                'exam.html',
+                'game.html',
+                'report.html',
+                'css/style.css',
+                'css/exam-report.css',
+                'css/game.css',
+                'js/app.js',
+                'js/exam.js',
+                'js/game.js',
+                'js/report.js',
+                'js/utils.js'
+            ];
+            
+            let missingFiles = [];
+            let resultHTML = '<h4>文件检查结果：</h4><ul>';
+            
+            requiredFiles.forEach(file => {
+                try {
+                    // 尝试访问文件
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('HEAD', file, false);
+                    xhr.send();
+                    
+                    if (xhr.status === 200) {
+                        resultHTML += `<li>✅ ${file}</li>`;
+                        testResults.passed++;
+                    } else {
+                        resultHTML += `<li>❌ ${file} (状态: ${xhr.status})</li>`;
+                        missingFiles.push(file);
+                        testResults.failed++;
+                    }
+                } catch (error) {
+                    resultHTML += `<li>❌ ${file} (错误: ${error.message})</li>`;
+                    missingFiles.push(file);
+                    testResults.failed++;
+                }
+            });
+            
+            resultHTML += '</ul>';
+            
+            if (missingFiles.length === 0) {
+                resultHTML += '<p class="test-pass">✅ 所有必需文件都存在！</p>';
+            } else {
+                resultHTML += `<p class="test-fail">❌ 缺失文件：${missingFiles.join(', ')}</p>`;
+            }
+            
+            document.getElementById('fileTestResult').innerHTML = resultHTML;
+            document.getElementById('fileTestResult').className = missingFiles.length === 0 ? 'test-result test-pass' : 'test-result test-fail';
+            
+            updateTestResults();
+            testResults.tests.push('文件完整性测试');
+        });
+        
+        // JavaScript功能测试
+        document.getElementById('testUserSystem').addEventListener('click', function() {
+            const result = document.getElementById('jsTestResult');
+            
+            try {
+                // 测试本地存储
+                localStorage.setItem('testUser', JSON.stringify({ name: '测试用户', grade: 3 }));
+                const user = JSON.parse(localStorage.getItem('testUser'));
+                
+                if (user && user.name === '测试用户') {
+                    result.innerHTML = '<p class="test-pass">✅ 用户系统测试通过！本地存储正常工作</p>';
+                    result.className = 'test-result test-pass';
+                    testResults.passed++;
+                } else {
+                    throw new Error('用户数据不匹配');
+                }
+            } catch (error) {
+                result.innerHTML = `<p class="test-fail">❌ 用户系统测试失败：${error.message}</p>`;
+                result.className = 'test-result test-fail';
+                testResults.failed++;
+            }
+            
+            updateTestResults();
+            testResults.tests.push('用户系统测试');
+        });
+        
+        // 题库系统测试
+        document.getElementById('testQuestionBank').addEventListener('click', function() {
+            const result = document.getElementById('jsTestResult');
+            
+            try {
+                // 检查exam.js是否加载了题库
+                if (typeof window.mathExamQuestions !== 'undefined') {
+                    result.innerHTML = `<p class="test-pass">✅ 题库系统测试通过！找到 ${window.mathExamQuestions.length} 道题目</p>`;
+                    result.className = 'test-result test-pass';
+                    testResults.passed++;
+                } else {
+                    throw new Error('题库未定义');
+                }
+            } catch (error) {
+                result.innerHTML = `<p class="test-fail">❌ 题库系统测试失败：${error.message}</p>`;
+                result.className = 'test-result test-fail';
+                testResults.failed++;
+            }
+            
+            updateTestResults();
+            testResults.tests.push('题库系统测试');
+        });
+        
+        // 游戏系统测试
+        document.getElementById('testGameSystem').addEventListener('click', function() {
+            const result = document.getElementById('jsTestResult');
+            
+            try {
+                // 检查game.js是否定义了游戏状态
+                if (typeof window.GameState !== 'undefined') {
+                    result.innerHTML = '<p class="test-pass">✅ 游戏系统测试通过！游戏状态管理正常</p>';
+                    result.className = 'test-result test-pass';
+                    testResults.passed++;
+                } else {
+                    throw new Error('游戏状态未定义');
+                }
+            } catch (error) {
+                result.innerHTML = `<p class="test-fail">❌ 游戏系统测试失败：${error.message}</p>`;
+                result.className = 'test-result test-fail';
+                testResults.failed++;
+            }
+            
+            updateTestResults();
+            testResults.tests.push('游戏系统测试');
+        });
+        
+        // 报告系统测试
+        document.getElementById('testReportSystem').addEventListener('click', function() {
+            const result = document.getElementById('jsTestResult');
+            
+            try {
+                // 检查Chart.js是否可用
+                if (typeof Chart !== 'undefined') {
+                    result.innerHTML = '<p class="test-pass">✅ 报告系统测试通过！图表库可用</p>';
+                    result.className = 'test-result test-pass';
+                    testResults.passed++;
+                } else {
+                    throw new Error('图表库未加载');
+                }
+            } catch (error) {
+                result.innerHTML = `<p class="test-fail">❌ 报告系统测试失败：${error.message}</p>`;
+                result.className = 'test-result test-fail';
+                testResults.failed++;
+            }
+            
+            updateTestResults();
+            testResults.tests.push('报告系统测试');
+        });
+        
+        // Git状态检查
+        document.getElementById('testGitStatus').addEventListener('click', function() {
+            const result = document.getElementById('deployTestResult');
+            
+            // 模拟Git状态检查
+            result.innerHTML = '<p class="test-warning">⚠️ Git状态检查需要服务器端支持，请在本地运行git status命令</p>';
+            result.className = 'test-result test-warning';
+            testResults.warnings++;
+            
+            updateTestResults();
+            testResults.tests.push('Git状态检查');
+        });
+        
+        // 文件大小检查
+        document.getElementById('testFileSize').addEventListener('click', function() {
+            const result = document.getElementById('deployTestResult');
+            
+            try {
+                // 检查主要文件大小
+                const filesToCheck = [
+                    { name: 'index.html', maxSize: 10 }, // KB
+                    { name: 'game.html', maxSize: 15 },
+                    { name: 'exam.html', maxSize: 10 },
+                    { name: 'report.html', maxSize: 10 },
+                    { name: 'js/exam.js', maxSize: 30 },
+                    { name: 'js/game.js', maxSize: 30 }
+                ];
+                
+                let allGood = true;
+                let resultHTML = '<h4>文件大小检查：</h4><ul>';
+                
+                filesToCheck.forEach(file => {
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('HEAD', file.name, false);
+                    xhr.send();
+                    
+                    const sizeKB = parseInt(xhr.getResponseHeader('Content-Length') || 0) / 1024;
+                    
+                    if (sizeKB <= file.maxSize) {
+                        resultHTML += `<li>✅ ${file.name}: ${sizeKB.toFixed(1)}KB (小于 ${file.maxSize}KB)</li>`;
+                    } else {
+                        resultHTML += `<li>⚠️ ${file.name}: ${sizeKB.toFixed(1)}KB (大于 ${file.maxSize}KB)</li>`;
+                        allGood = false;
+                    }
+                });
+                
+                resultHTML += '</ul>';
+                
+                if (allGood) {
+                    resultHTML += '<p class="test-pass">✅ 所有文件大小都在合理范围内！</p>';
+                    result.className = 'test-result test-pass';
+                    testResults.passed++;
+                } else {
+                    resultHTML += '<p class="test-warning">⚠️ 部分文件较大，建议优化</p>';
+                    result.className = 'test-result test-warning';
+                    testResults.warnings++;
+                }
+                
+                result.innerHTML = resultHTML;
+            } catch (error) {
+                result.innerHTML = `<p class="test-fail">❌ 文件大小检查失败：${error.message}</p>`;
+                result.className = 'test-result test-fail';
+                testResults.failed++;
+            }
+            
+            updateTestResults();
+            testResults.tests.push('文件大小检查');
+        });
+        
+        // 外部依赖检查
+        document.getElementById('testDependencies').addEventListener('click', function() {
+            const result = document.getElementById('deployTestResult');
+            
+            const dependencies = [
+                { name: 'Font Awesome', url: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css' },
+                { name: 'Google Fonts', url: 'https://fonts.googleapis.com/css2' },
+                { name: 'Chart.js', url: 'https://cdn.jsdelivr.net/npm/chart.js' }
+            ];
+            
+            let allGood = true;
+            let resultHTML = '<h4>外部依赖检查：</h4><ul>';
+            
+            dependencies.forEach(dep => {
+                const img = new Image();
+                img.onload = function() {
+                    resultHTML += `<li>✅ ${dep.name}: 可访问</li>`;
+                };
+                img.onerror = function() {
+                    resultHTML += `<li>❌ ${dep.name}: 无法访问</li>`;
+                    allGood = false;
+                };
+                img.src = dep.url + '?test=' + Date.now();
+            });
+            
+            resultHTML += '</ul>';
+            
+            // 延迟显示结果
+            setTimeout(() => {
+                if (allGood) {
+                    resultHTML += '<p class="test-pass">✅ 所有外部依赖都可访问！</p>';
+                    result.className = 'test-result test-pass';
+                    testResults.passed++;
+                } else {
+                    resultHTML += '<p class="test-fail">❌ 部分外部依赖无法访问</p>';
+                    result.className = 'test-result test-fail';
+                    testResults.failed++;
+                }
+                
+                result.innerHTML = resultHTML;
+                updateTestResults();
+                testResults.tests.push('外部依赖检查');
+            }, 2000);
+        });
+        
+        // 生成测试报告
+        document.getElementById('generateReport').addEventListener('click', function() {
+            const summary = document.getElementById('testSummary');
+            const totalTests = testResults.passed + testResults.failed + testResults.warnings;
+            
+            let reportHTML = `
+                <h3>📊 测试报告摘要</h3>
+                <p>测试时间：${new Date().toLocaleString()}</p>
+                <p>总测试数：${totalTests}</p>
+                <p>✅ 通过：${testResults.passed}</p>
+                <p>❌ 失败：${testResults.failed}</p>
+                <p>⚠️ 警告：${testResults.warnings}</p>
+                
+                <h4>已执行的测试：</h4>
+                <ul>
+            `;
+            
+            testResults.tests.forEach(test => {
+                reportHTML += `<li>${test}</li>`;
+            });
+            
+            reportHTML += `
+                </ul>
+                
+                <h4>部署建议：</h4>
+                <ul>
+            `;
+            
+            if (testResults.failed === 0) {
+                reportHTML += `
+                    <li>✅ 所有测试通过，可以安全部署</li>
+                    <li>✅ 文件完整性良好</li>
+                    <li>✅ JavaScript功能正常</li>
+                    <li>✅ 外部依赖可访问</li>
+                `;
+            } else {
+                reportHTML += `
+                    <li>⚠️ 请先修复失败的测试</li>
+                    <li>⚠️ 检查缺失的文件</li>
+                    <li>⚠️ 验证JavaScript功能</li>
+                    <li>⚠️ 确保外部资源可访问</li>
+                `;
+            }
+            
+            reportHTML += `
+                </ul>
+                
+                <h4>下一步操作：</h4>
+                <ol>
+                    <li>启用GitHub Pages设置</li>
+                    <li>访问公网链接验证功能</li>
+                    <li>进行用户体验测试</li>
+                    <li>收集反馈并优化</li>
+                </ol>
+            `;
+            
+            summary.innerHTML = reportHTML;
+            
+            // 创建下载报告按钮
+            const downloadBtn = document.createElement('button');
+            downloadBtn.className = 'btn btn-success';
+            downloadBtn.innerHTML = '<i class="fas fa-file-download"></i> 下载测试报告';
+            downloadBtn.onclick = function() {
+                const reportText = `数学小博士汽车闯关游戏 - 测试报告
+=====================================
+测试时间：${new Date().toLocaleString()}
+总测试数：${totalTests}
+通过：${testResults.passed}
+失败：${testResults.failed}
+警告：${testResults.warnings}
+
+已执行的测试：
+${testResults.tests.join('\n')}
+
+部署建议：
+${testResults.failed === 0 ? '✅ 所有测试通过，可以安全部署' : '⚠️ 请先修复失败的测试'}
+
+公网链接：
+- 首页：https://waynexu0529.github.io/math-exam-web/
+- 游戏：https://waynexu0529.github.io/math-exam-web/game.html
+- 考试：https://waynexu0529.github.io/math-exam-web/exam.html
+- 报告：https://waynexu0529.github.io/math-exam-web/report.html
+`;
+                
+                const blob = new Blob([reportText], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'math-exam-test-report.txt';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            };
+            
+            summary.appendChild(downloadBtn);
+        });
+        
+        // 页面加载时自动运行基础测试
+        window.addEventListener('load', function() {
+            // 自动运行文件完整性测试
+            setTimeout(() => {
+                document.getElementById('testFilesBtn').click();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

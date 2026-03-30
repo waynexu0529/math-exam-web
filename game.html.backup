@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>汽车闯关游戏 - 数学小博士</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/exam-report.css">
+    <link rel="stylesheet" href="css/game.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-racing-car"></i>
+                <span>数学赛车闯关</span>
+            </div>
+            <div class="nav-user">
+                <span id="gameUsername">赛车手</span>
+                <div class="game-points">
+                    <i class="fas fa-coins"></i>
+                    <span id="gamePoints">0</span>
+                </div>
+                <button id="backToHome" class="btn btn-outline">
+                    <i class="fas fa-home"></i>返回首页
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 游戏主内容 -->
+    <main class="game-container">
+        <!-- 游戏概览 -->
+        <section class="game-overview">
+            <div class="overview-card">
+                <h1>🏎️ 数学赛车闯关</h1>
+                <p class="subtitle">通过数学考试改装赛车，赢得比赛！</p>
+                <div class="overview-stats">
+                    <div class="stat">
+                        <i class="fas fa-trophy"></i>
+                        <div>
+                            <span class="stat-number" id="totalExams">0</span>
+                            <span class="stat-label">次考试</span>
+                        </div>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-star"></i>
+                        <div>
+                            <span class="stat-number" id="bestScore">0</span>
+                            <span class="stat-label">最高分</span>
+                        </div>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-car"></i>
+                        <div>
+                            <span class="stat-number" id="unlockedCars">1</span>
+                            <span class="stat-label">辆赛车</span>
+                        </div>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-cog"></i>
+                        <div>
+                            <span class="stat-number" id="unlockedParts">0</span>
+                            <span class="stat-label">个零件</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 主要游戏区域 -->
+        <div class="game-main">
+            <!-- 左侧：车库和汽车 -->
+            <section class="game-section garage-section">
+                <h2><i class="fas fa-garage"></i> 我的车库</h2>
+                <div id="carSelectionContainer" class="car-selection">
+                    <!-- 汽车选择列表会通过JavaScript动态生成 -->
+                </div>
+                
+                <div class="car-details" id="carDetails">
+                    <h3>当前赛车状态</h3>
+                    <div class="car-stats">
+                        <div class="stat-bar">
+                            <span>速度</span>
+                            <div class="bar-container">
+                                <div class="bar-fill" id="speedBar" style="width: 60%"></div>
+                            </div>
+                            <span id="speedValue">60</span>
+                        </div>
+                        <div class="stat-bar">
+                            <span>操控</span>
+                            <div class="bar-container">
+                                <div class="bar-fill" id="handlingBar" style="width: 50%"></div>
+                            </div>
+                            <span id="handlingValue">50</span>
+                        </div>
+                        <div class="stat-bar">
+                            <span>耐久</span>
+                            <div class="bar-container">
+                                <div class="bar-fill" id="durabilityBar" style="width: 40%"></div>
+                            </div>
+                            <span id="durabilityValue">40</span>
+                        </div>
+                        <div class="stat-bar">
+                            <span>加速</span>
+                            <div class="bar-container">
+                                <div class="bar-fill" id="accelerationBar" style="width: 55%"></div>
+                            </div>
+                            <span id="accelerationValue">55</span>
+                        </div>
+                        <div class="stat-bar">
+                            <span>刹车</span>
+                            <div class="bar-container">
+                                <div class="bar-fill" id="brakingBar" style="width: 45%"></div>
+                            </div>
+                            <span id="brakingValue">45</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 中间：章节和比赛 -->
+            <section class="game-section chapters-section">
+                <h2><i class="fas fa-flag-checkered"></i> 闯关章节</h2>
+                <div id="chapterContainer" class="chapters-list">
+                    <!-- 章节列表会通过JavaScript动态生成 -->
+                </div>
+                
+                <div class="race-section">
+                    <h3><i class="fas fa-trophy"></i> 耐力比赛</h3>
+                    <p>使用你改装后的赛车参加比赛，成绩越好奖励越多！</p>
+                    <button id="startRaceBtn" class="btn btn-primary">
+                        <i class="fas fa-play"></i> 开始比赛
+                    </button>
+                    <div id="raceResultContainer">
+                        <!-- 比赛结果会动态显示 -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- 右侧：零件和改装 -->
+            <section class="game-section parts-section">
+                <h2><i class="fas fa-tools"></i> 零件改装</h2>
+                <div class="parts-inventory">
+                    <h3>已解锁零件</h3>
+                    <div id="partsList" class="parts-grid">
+                        <!-- 零件列表会动态生成 -->
+                    </div>
+                </div>
+                
+                <div class="upgrade-section">
+                    <h3><i class="fas fa-arrow-up"></i> 升级系统</h3>
+                    <p>使用考试积分升级汽车零件，提升赛车性能！</p>
+                    <div class="upgrade-options">
+                        <div class="upgrade-option">
+                            <h4>引擎升级</h4>
+                            <p>提升速度和加速度</p>
+                            <button class="btn btn-sm btn-primary upgrade-part-btn" data-part-id="engine">
+                                升级 (100积分)
+                            </button>
+                        </div>
+                        <div class="upgrade-option">
+                            <h4>轮胎升级</h4>
+                            <p>提升操控和刹车</p>
+                            <button class="btn btn-sm btn-primary upgrade-part-btn" data-part-id="tires">
+                                升级 (100积分)
+                            </button>
+                        </div>
+                        <div class="upgrade-option">
+                            <h4>刹车升级</h4>
+                            <p>提升刹车和安全性能</p>
+                            <button class="btn btn-sm btn-primary upgrade-part-btn" data-part-id="brakes">
+                                升级 (100积分)
+                            </button>
+                        </div>
+                        <div class="upgrade-option">
+                            <h4>悬挂升级</h4>
+                            <p>提升操控和舒适度</p>
+                            <button class="btn btn-sm btn-primary upgrade-part-btn" data-part-id="suspension">
+                                升级 (100积分)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="collision-test">
+                    <h3><i class="fas fa-car-crash"></i> 碰撞测试</h3>
+                    <p>测试你的赛车安全性能</p>
+                    <button id="startCollisionTest" class="btn btn-warning">
+                        <i class="fas fa-bolt"></i> 开始碰撞测试
+                    </button>
+                    <div id="collisionResult" class="collision-result">
+                        <!-- 碰撞测试结果会动态显示 -->
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>© 2026 数学小博士 - 汽车闯关游戏</p>
+            <p>通过数学考试改装赛车，让学习变得更有趣！</p>
+        </div>
+    </footer>
+
+    <!-- 游戏脚本 -->
+    <script src="js/utils.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>
