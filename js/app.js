@@ -45,93 +45,27 @@ function loadUserFromStorage() {
 
 // 初始化题库（北师大版三年级数学）
 function initQuestionBank() {
-    AppState.questions = [
+    AppState.questions = window.mathExamQuestions || [
         {
             id: 1,
             type: 'single_choice',
-            content: '下面哪个数是最大的？',
+            content: '235 + 148 = ?',
             options: [
-                { id: 'A', text: '256' },
-                { id: 'B', text: '302' },
-                { id: 'C', text: '198' },
-                { id: 'D', text: '275' }
+                { id: 'A', text: '373' },
+                { id: 'B', text: '383' },
+                { id: 'C', text: '393' },
+                { id: 'D', text: '403' }
             ],
             correctAnswer: 'B',
-            explanation: '302 > 275 > 256 > 198，所以302是最大的。',
-            knowledgePoints: ['number_comparison', 'three_digit'],
+            explanation: '235 + 148 = 383',
+            knowledgePoints: ['addition', 'three_digit'],
             difficulty: 'easy',
             estimatedTime: 30
-        },
-        {
-            id: 2,
-            type: 'single_choice',
-            content: '用数字卡片3、0、5可以组成多少个不同的三位数？',
-            options: [
-                { id: 'A', text: '3个' },
-                { id: 'B', text: '4个' },
-                { id: 'C', text: '5个' },
-                { id: 'D', text: '6个' }
-            ],
-            correctAnswer: 'B',
-            explanation: '可以组成：305、350、503、530，共4个不同的三位数。0不能放在百位。',
-            knowledgePoints: ['number_combination', 'place_value'],
-            difficulty: 'medium',
-            estimatedTime: 45
-        },
-        {
-            id: 3,
-            type: 'single_choice',
-            content: '小明有24个苹果，他想平均分给4个小朋友，每个小朋友能得到几个苹果？',
-            options: [
-                { id: 'A', text: '4个' },
-                { id: 'B', text: '6个' },
-                { id: 'C', text: '8个' },
-                { id: 'D', text: '12个' }
-            ],
-            correctAnswer: 'B',
-            explanation: '24 ÷ 4 = 6，所以每个小朋友能得到6个苹果。',
-            knowledgePoints: ['division', 'equal_sharing'],
-            difficulty: 'easy',
-            estimatedTime: 30
-        },
-        {
-            id: 4,
-            type: 'single_choice',
-            content: '一个长方形的长是8厘米，宽是5厘米，它的周长是多少厘米？',
-            options: [
-                { id: 'A', text: '13厘米' },
-                { id: 'B', text: '26厘米' },
-                { id: 'C', text: '40厘米' },
-                { id: 'D', text: '48厘米' }
-            ],
-            correctAnswer: 'B',
-            explanation: '长方形周长 = (长 + 宽) × 2 = (8 + 5) × 2 = 26厘米。',
-            knowledgePoints: ['perimeter', 'rectangle'],
-            difficulty: 'medium',
-            estimatedTime: 40
-        },
-        {
-            id: 5,
-            type: 'single_choice',
-            content: '下面哪个图形是轴对称图形？',
-            options: [
-                { id: 'A', text: '平行四边形' },
-                { id: 'B', text: '等腰三角形' },
-                { id: 'C', text: '直角三角形' },
-                { id: 'D', text: '任意三角形' }
-            ],
-            correctAnswer: 'B',
-            explanation: '等腰三角形是轴对称图形，沿着底边上的高对折，两边能完全重合。',
-            knowledgePoints: ['symmetry', 'geometric_shapes'],
-            difficulty: 'medium',
-            estimatedTime: 35
         }
     ];
-    
-    console.log('题库初始化完成，共', AppState.questions.length, '道题目');
 }
 
-// 绑定事件监听器
+// 绑定事件
 function bindEvents() {
     // 登录按钮
     const loginBtn = document.getElementById('loginBtn');
@@ -151,43 +85,32 @@ function bindEvents() {
         loginForm.addEventListener('submit', handleLogin);
     }
     
-    // 功能卡片点击事件
-    const startExamBtn = document.getElementById('startExam');
-    if (startExamBtn) {
-        startExamBtn.addEventListener('click', (e) => {
-            // 检查点击的是否是按钮
-            if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
-                startExam(10); // 10道题
-            }
-        });
-    }
-    
-    const dailyPracticeBtn = document.getElementById('dailyPractice');
-    if (dailyPracticeBtn) {
-        dailyPracticeBtn.addEventListener('click', (e) => {
-            if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
-                startDailyPractice();
-            }
-        });
-    }
-    
-    const viewReportBtn = document.getElementById('viewReport');
-    if (viewReportBtn) {
-        viewReportBtn.addEventListener('click', (e) => {
-            if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
-                showLearningReport();
-            }
-        });
-    }
-    
-    const wrongQuestionsBtn = document.getElementById('wrongQuestions');
-    if (wrongQuestionsBtn) {
-        wrongQuestionsBtn.addEventListener('click', (e) => {
-            if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
-                showWrongQuestions();
-            }
-        });
-    }
+    // 功能卡片点击事件 - 修复版
+    document.addEventListener('click', function(e) {
+        // 开始考试
+        if (e.target.closest('#startExam') || (e.target.id === 'startExam')) {
+            e.preventDefault();
+            startExam(10);
+        }
+        
+        // 每日练习
+        if (e.target.closest('#dailyPractice') || (e.target.id === 'dailyPractice')) {
+            e.preventDefault();
+            startDailyPractice();
+        }
+        
+        // 学习报告
+        if (e.target.closest('#viewReport') || (e.target.id === 'viewReport')) {
+            e.preventDefault();
+            showLearningReport();
+        }
+        
+        // 错题本
+        if (e.target.closest('#wrongQuestions') || (e.target.id === 'wrongQuestions')) {
+            e.preventDefault();
+            showWrongQuestions();
+        }
+    });
     
     // 点击模态框外部关闭
     window.addEventListener('click', function(event) {
@@ -202,7 +125,7 @@ function bindEvents() {
 function showLoginModal() {
     const modal = document.getElementById('loginModal');
     if (modal) {
-        modal.style.display = 'flex';
+        modal.style.display = 'block';
     }
 }
 
@@ -215,28 +138,25 @@ function hideLoginModal() {
 }
 
 // 处理登录
-function handleLogin(event) {
-    event.preventDefault();
+function handleLogin(e) {
+    e.preventDefault();
     
-    const studentName = document.getElementById('studentName').value;
-    const grade = document.getElementById('grade').value;
+    const nameInput = document.getElementById('studentName');
+    const gradeInput = document.getElementById('studentGrade');
     
-    if (!studentName || !grade) {
-        alert('请填写完整信息');
+    if (!nameInput || !gradeInput) return;
+    
+    const name = nameInput.value.trim();
+    const grade = gradeInput.value;
+    
+    if (!name || !grade) {
+        alert('请填写姓名和选择年级！');
         return;
     }
     
-    // 创建用户对象
-    AppState.currentUser = {
-        id: 'user_' + Date.now(),
-        name: studentName,
-        grade: parseInt(grade),
-        joinDate: new Date().toISOString()
-    };
-    
+    // 保存用户信息
+    AppState.currentUser = { name, grade };
     AppState.isLoggedIn = true;
-    
-    // 保存到本地存储
     localStorage.setItem('mathExamUser', JSON.stringify(AppState.currentUser));
     
     // 更新UI
@@ -245,10 +165,7 @@ function handleLogin(event) {
     // 隐藏模态框
     hideLoginModal();
     
-    // 显示欢迎消息
-    showNotification(`欢迎回来，${studentName}同学！开始你的数学学习之旅吧！`);
-    
-    console.log('用户登录成功:', AppState.currentUser);
+    alert(`欢迎回来，${name}同学！`);
 }
 
 // 开始考试
@@ -278,6 +195,12 @@ function startExam(questionCount = 10) {
     console.log('开始考试:', AppState.currentExam);
 }
 
+// 获取随机题目
+function getRandomQuestions(count) {
+    const shuffled = [...AppState.questions].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+}
+
 // 开始每日练习
 function startDailyPractice() {
     if (!AppState.isLoggedIn) {
@@ -298,18 +221,6 @@ function showLearningReport() {
     
     // 跳转到报告页面
     window.location.href = 'report.html';
-    
-    // 模拟报告数据
-    const reportData = {
-        totalPractice: AppState.learningStats.totalQuestions,
-        correctRate: AppState.learningStats.totalQuestions > 0 
-            ? (AppState.learningStats.correctAnswers / AppState.learningStats.totalQuestions * 100).toFixed(1)
-            : 0,
-        averageScore: AppState.learningStats.averageScore,
-        todayPractice: AppState.learningStats.todayPractice
-    };
-    
-    console.log('学习报告:', reportData);
 }
 
 // 显示错题本
@@ -319,160 +230,25 @@ function showWrongQuestions() {
         return;
     }
     
-    // 从本地存储加载错题
-    const wrongQuestions = JSON.parse(localStorage.getItem('wrongQuestions') || '[]');
-    
-    if (wrongQuestions.length === 0) {
-        alert('目前还没有错题，继续保持！');
-        return;
-    }
-    
-    // 跳转到错题本页面（暂时跳转到报告页面）
+    // 跳转到报告页面
     window.location.href = 'report.html?tab=wrong';
-    
-    console.log('错题本:', wrongQuestions);
 }
 
-// 显示考试页面
-function showExamPage() {
-    // 这里应该创建或跳转到考试页面
-    // 暂时用alert模拟
-    alert(`考试开始！\n共有 ${AppState.currentExam.totalQuestions} 道题目\n请认真作答！`);
-    
-    // 模拟第一题
-    if (AppState.currentExam.questions.length > 0) {
-        showQuestion(AppState.currentExam.questions[0]);
-    }
-}
-
-// 显示题目
-function showQuestion(question) {
-    // 这里应该渲染题目到页面
-    console.log('显示题目:', question);
-    
-    // 创建题目HTML
-    const questionHTML = `
-        <div class="question-container">
-            <div class="question-text">${question.content}</div>
-            <ul class="option-list">
-                ${question.options.map(option => `
-                    <li class="option-item" data-option="${option.id}">
-                        ${option.id}. ${option.text}
-                    </li>
-                `).join('')}
-            </ul>
-        </div>
-    `;
-    
-    // 这里应该将HTML插入到页面中
-    // document.getElementById('examContainer').innerHTML = questionHTML;
-}
-
-// 获取随机题目
-function getRandomQuestions(count) {
-    const shuffled = [...AppState.questions].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, count);
-}
-
-// 更新UI状态
+// 更新UI
 function updateUI() {
-    const usernameSpan = document.getElementById('username');
-    const loginBtn = document.getElementById('loginBtn');
-    
-    if (AppState.isLoggedIn && AppState.currentUser) {
-        if (usernameSpan) {
-            usernameSpan.textContent = AppState.currentUser.name;
-        }
-        if (loginBtn) {
-            loginBtn.textContent = '退出';
-            loginBtn.onclick = handleLogout;
-        }
-    } else {
-        if (usernameSpan) {
-            usernameSpan.textContent = '游客';
-        }
-        if (loginBtn) {
-            loginBtn.textContent = '登录';
-            loginBtn.onclick = showLoginModal;
-        }
+    // 更新用户信息显示
+    const userInfo = document.getElementById('userInfo');
+    if (userInfo && AppState.isLoggedIn && AppState.currentUser) {
+        userInfo.textContent = `欢迎，${AppState.currentUser.name}（${AppState.currentUser.grade}年级）`;
     }
 }
 
-// 处理退出
-function handleLogout() {
-    if (confirm('确定要退出登录吗？您的学习记录会保存。')) {
-        AppState.currentUser = null;
-        AppState.isLoggedIn = false;
-        localStorage.removeItem('mathExamUser');
-        updateUI();
-        showNotification('已退出登录');
-    }
-}
-
-// 显示通知
-function showNotification(message, type = 'info') {
-    // 创建通知元素
-    const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.textContent = message;
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: ${type === 'success' ? '#52c41a' : '#1890FF'};
-        color: white;
-        padding: 1rem 1.5rem;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        z-index: 1000;
-        animation: slideIn 0.3s ease-out;
-    `;
-    
-    document.body.appendChild(notification);
-    
-    // 3秒后自动移除
-    setTimeout(() => {
-        notification.style.animation = 'slideOut 0.3s ease-out';
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.parentNode.removeChild(notification);
-            }
-        }, 300);
-    }, 3000);
-}
-
-// 添加CSS动画
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideIn {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-    
-    @keyframes slideOut {
-        from {
-            transform: translateX(0);
-            opacity: 1;
-        }
-        to {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-    }
-`;
-document.head.appendChild(style);
-
-// 导出到全局（用于调试）
+// 导出到全局
 window.AppState = AppState;
 window.mathExamApp = {
     initApp,
     startExam,
+    startDailyPractice,
     showLearningReport,
     showWrongQuestions
 };
