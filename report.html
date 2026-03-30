@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学习报告 - 数学小博士</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/exam-report.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 图表库 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-graduation-cap"></i>
+                <span>数学小博士 - 学习报告</span>
+            </div>
+            <div class="nav-user">
+                <span id="reportUsername">学生姓名</span>
+                <button id="backToHome" class="btn btn-outline">
+                    <i class="fas fa-home"></i>返回首页
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 报告内容 -->
+    <main class="container">
+        <!-- 报告概览 -->
+        <section class="report-overview">
+            <h1>学习报告</h1>
+            <div class="overview-cards">
+                <div class="overview-card">
+                    <div class="card-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <h3>总练习量</h3>
+                    <p class="stat-number" id="totalPractice">0</p>
+                    <p class="stat-label">道题目</p>
+                </div>
+                
+                <div class="overview-card">
+                    <div class="card-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h3>正确率</h3>
+                    <p class="stat-number" id="correctRate">0%</p>
+                    <p class="stat-label">平均正确率</p>
+                </div>
+                
+                <div class="overview-card">
+                    <div class="card-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>平均分</h3>
+                    <p class="stat-number" id="averageScore">0</p>
+                    <p class="stat-label">分/100分</p>
+                </div>
+                
+                <div class="overview-card">
+                    <div class="card-icon">
+                        <i class="fas fa-calendar-day"></i>
+                    </div>
+                    <h3>今日练习</h3>
+                    <p class="stat-number" id="todayPractice">0</p>
+                    <p class="stat-label">道题目</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 图表分析 -->
+        <section class="chart-analysis">
+            <div class="chart-row">
+                <div class="chart-container">
+                    <h3>正确率趋势</h3>
+                    <canvas id="correctRateChart"></canvas>
+                </div>
+                
+                <div class="chart-container">
+                    <h3>知识点掌握情况</h3>
+                    <canvas id="knowledgeChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-row">
+                <div class="chart-container">
+                    <h3>题目难度分布</h3>
+                    <canvas id="difficultyChart"></canvas>
+                </div>
+                
+                <div class="chart-container">
+                    <h3>学习时间分布</h3>
+                    <canvas id="timeChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- 详细分析 -->
+        <section class="detailed-analysis">
+            <h2>详细分析</h2>
+            
+            <div class="analysis-section">
+                <h3><i class="fas fa-star"></i> 优势知识点</h3>
+                <ul id="strengthsList">
+                    <!-- 优势知识点会动态生成 -->
+                </ul>
+            </div>
+            
+            <div class="analysis-section">
+                <h3><i class="fas fa-exclamation-triangle"></i> 薄弱环节</h3>
+                <ul id="weaknessesList">
+                    <!-- 薄弱环节会动态生成 -->
+                </ul>
+            </div>
+            
+            <div class="analysis-section">
+                <h3><i class="fas fa-lightbulb"></i> 学习建议</h3>
+                <div id="suggestions">
+                    <!-- 学习建议会动态生成 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 错题回顾 -->
+        <section class="wrong-questions-review">
+            <h2>近期错题</h2>
+            <div id="wrongQuestionsList">
+                <!-- 错题会动态加载 -->
+            </div>
+            <button id="reviewAllWrong" class="btn btn-warning">
+                <i class="fas fa-book-medical"></i>复习所有错题
+            </button>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>© 2026 数学小博士 - 三年级数学考试系统</p>
+            <p>报告生成时间: <span id="reportTime">2026-03-30 15:30</span></p>
+        </div>
+    </footer>
+
+    <!-- 报告专用脚本 -->
+    <script src="js/utils.js"></script>
+    <script src="js/report.js"></script>
+</body>
+</html>

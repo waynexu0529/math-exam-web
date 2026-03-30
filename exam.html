@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数学考试 - 数学小博士</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/exam-report.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-graduation-cap"></i>
+                <span>数学小博士 - 考试中</span>
+            </div>
+            <div class="nav-exam-info">
+                <span id="examProgress">第1题 / 共10题</span>
+                <span id="examTimer">剩余时间: 30:00</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 考试内容 -->
+    <main class="container">
+        <!-- 考试信息 -->
+        <section class="exam-header">
+            <div class="exam-info">
+                <h1>三年级数学考试</h1>
+                <div class="exam-stats">
+                    <div class="stat">
+                        <i class="fas fa-user"></i>
+                        <span id="studentNameDisplay">学生姓名</span>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-clock"></i>
+                        <span>开始时间: <span id="startTimeDisplay">15:30</span></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="exam-controls">
+                <button id="prevQuestion" class="btn btn-outline" disabled>
+                    <i class="fas fa-arrow-left"></i>上一题
+                </button>
+                <button id="nextQuestion" class="btn btn-primary">
+                    下一题<i class="fas fa-arrow-right"></i>
+                </button>
+                <button id="submitExam" class="btn btn-warning">
+                    <i class="fas fa-paper-plane"></i>交卷
+                </button>
+            </div>
+        </section>
+
+        <!-- 题目区域 -->
+        <section id="questionContainer" class="question-container">
+            <!-- 题目会通过JavaScript动态加载 -->
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>正在加载题目...</p>
+            </div>
+        </section>
+
+        <!-- 答题进度 -->
+        <section class="exam-progress">
+            <h3>答题进度</h3>
+            <div class="progress-grid" id="progressGrid">
+                <!-- 进度按钮会通过JavaScript动态生成 -->
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>© 2026 数学小博士 - 三年级数学考试系统</p>
+            <p>考试进行中，请认真作答</p>
+        </div>
+    </footer>
+
+    <!-- 考试专用脚本 -->
+    <script src="js/utils.js"></script>
+    <script src="js/exam.js"></script>
+</body>
+</html>
