@@ -74,7 +74,7 @@ function loadExamData() {
 function createNewExam(questionCount) {
     // 从题库中随机选择题目
     const allQuestions = getQuestionBank();
-    const shuffled = [...allQuestions].sort(() => 0.5 - Math.random());
+    const shuffled = shuffleArray(allQuestions);
     const selectedQuestions = shuffled.slice(0, questionCount);
     
     ExamState.currentExam = {
