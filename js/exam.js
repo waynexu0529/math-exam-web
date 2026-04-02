@@ -318,6 +318,10 @@ function loadQuestion(questionIndex) {
     const question = ExamState.currentExam.questions[questionIndex];
     const container = document.getElementById('questionContainer');
     
+    // 更新并保存当前题号
+    ExamState.currentExam.currentQuestionIndex = questionIndex;
+    localStorage.setItem('currentExam', JSON.stringify(ExamState.currentExam));
+    
     // 创建题目HTML
     const questionHTML = `
         <div class="question-header">
