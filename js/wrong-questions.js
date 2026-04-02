@@ -12,6 +12,10 @@ function loadWrongQuestions() {
     const wrongQuestions = JSON.parse(localStorage.getItem('wrongQuestions') || '[]');
     const listContainer = document.getElementById('wrongList');
     
+    console.log('=== 错题本加载 ===');
+    console.log('错题数量:', wrongQuestions.length);
+    console.log('错题数据:', wrongQuestions);
+    
     if (wrongQuestions.length === 0) {
         listContainer.innerHTML = `
             <div class="empty-state">
@@ -27,6 +31,8 @@ function loadWrongQuestions() {
     // 应用筛选
     const filtered = filterQuestions(wrongQuestions);
     
+    console.log('筛选后错题数量:', filtered.length);
+    
     if (filtered.length === 0) {
         listContainer.innerHTML = `
             <div class="empty-state">
@@ -40,19 +46,39 @@ function loadWrongQuestions() {
     
     // 渲染错题卡片
     listContainer.innerHTML = filtered.map((item, index) => {
-        const question = item.question;
-        const chapterName = item.chapterName || '未分类';
+        // 容错处理：兼容旧数据格式
+        let question, chapterName, userAnswer, isResolved;
+        
+        if (item.question) {
+            // 新格式：有question字段
+            question = item.question;
+            chapterName = item.chapterName || '未分类';
+            userAnswer = item.userAnswer;
+            isResolved = item.resolved || false;
+        } else {
+            // 旧格式：question字段直接展开在item上
+            question = item;
+            chapterName = '未分类';
+            userAnswer = item.userAnswer;
+            isResolved = false;
+        }
+        
+        // 确保question有必要的字段
+        if (!question.content || !question.options || !question.correctAnswer) {
+            console.error('错题数据格式错误:', item);
+            return '';
+        }
         
         return `
-            <div class="wrong-question-card" data-question-id="${item.id}">
+            <div class="wrong-question-card" data-question-id="${item.id || index}">
                 <div class="question-header-info">
                     <div class="question-number">
                         <i class="fas fa-question-circle"></i> 
                         错题 #${index + 1}
                     </div>
                     <div class="question-badges">
-                        <span class="badge ${item.resolved ? 'badge-resolved' : 'badge-unresolved'}">
-                            ${item.resolved ? '✅ 已掌握' : '❌ 待复习'}
+                        <span class="badge ${isResolved ? 'badge-resolved' : 'badge-unresolved'}">
+                            ${isResolved ? '✅ 已掌握' : '❌ 待复习'}
                         </span>
                         <span class="badge badge-chapter">${chapterName}</span>
                     </div>
@@ -64,7 +90,7 @@ function loadWrongQuestions() {
                 
                 <div class="wrong-options">
                     ${question.options.map(option => {
-                        const isUserAnswer = option.id === item.userAnswer;
+                        const isUserAnswer = option.id === userAnswer;
                         const isCorrectAnswer = option.id === question.correctAnswer;
                         let className = 'wrong-option-item';
                         let mark = '';
@@ -89,7 +115,7 @@ function loadWrongQuestions() {
                 
                 <div class="wrong-explanation">
                     <h4><i class="fas fa-lightbulb"></i> 答案解析</h4>
-                    <p>${question.explanation}</p>
+                    <p>${question.explanation || '暂无解析'}</p>
                 </div>
                 
                 ${question.knowledgePoints && question.knowledgePoints.length > 0 ? `
@@ -102,16 +128,16 @@ function loadWrongQuestions() {
                 ` : ''}
                 
                 <div class="question-actions">
-                    ${!item.resolved ? `
-                        <button class="btn btn-success btn-sm" onclick="markAsResolved('${item.id}')">
+                    ${!isResolved ? `
+                        <button class="btn btn-success btn-sm" onclick="markAsResolved('${item.id || index}')">
                             <i class="fas fa-check"></i> 标记为已掌握
                         </button>
                     ` : `
-                        <button class="btn btn-outline btn-sm" onclick="markAsUnresolved('${item.id}')">
+                        <button class="btn btn-outline btn-sm" onclick="markAsUnresolved('${item.id || index}')">
                             <i class="fas fa-undo"></i> 取消掌握
                         </button>
                     `}
-                    <button class="btn btn-danger btn-outline btn-sm" onclick="deleteWrongQuestion('${item.id}')">
+                    <button class="btn btn-danger btn-outline btn-sm" onclick="deleteWrongQuestion('${item.id || index}')">
                         <i class="fas fa-trash"></i> 删除
                     </button>
                 </div>

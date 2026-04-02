@@ -760,22 +760,39 @@ function saveWrongQuestions() {
         const question = ExamState.currentExam.questions[i];
         const userAnswer = ExamState.userAnswers[i];
         
+        // 只保存答错的题目（未作答也算答错）
         if (userAnswer !== question.correctAnswer) {
-            wrongQuestions.push({
-                ...question,
-                userAnswer: userAnswer,
+            const wrongItem = {
+                id: `wrong_${question.id}_${Date.now()}_${i}`, // 唯一ID
+                question: question, // 完整的题目对象
+                userAnswer: userAnswer || null,
                 examDate: new Date().toISOString(),
-                examId: ExamState.currentExam.id
-            });
+                examId: ExamState.currentExam.id,
+                resolved: false, // 默认未掌握
+                chapterName: ExamState.currentExam.selectedChapters 
+                    ? ExamState.currentExam.selectedChapters.map(chId => 
+                        ChapterSystem.getChapterName(chId)
+                    ).join(', ')
+                    : '未分类'
+            };
+            
+            // 检查是否已存在相同题目（根据question.id去重）
+            const existingIndex = wrongQuestions.findIndex(w => 
+                w.question && w.question.id === question.id
+            );
+            
+            if (existingIndex !== -1) {
+                // 如果存在，更新记录
+                wrongQuestions[existingIndex] = wrongItem;
+            } else {
+                // 不存在，添加新记录
+                wrongQuestions.push(wrongItem);
+            }
         }
     }
     
-    // 去重
-    const uniqueWrongQuestions = Array.from(
-        new Map(wrongQuestions.map(q => [q.id, q])).values()
-    );
-    
-    localStorage.setItem('wrongQuestions', JSON.stringify(uniqueWrongQuestions));
+    localStorage.setItem('wrongQuestions', JSON.stringify(wrongQuestions));
+    console.log('✅ 错题保存完成，共', wrongQuestions.length, '道');
 }
 
 // 显示考试结果
