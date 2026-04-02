@@ -14,6 +14,7 @@ const ExamState = {
     isSubmitted: false,
     correctStreak: 0, // 连续答对数
     totalCorrect: 0, // 总答对数
+    tempSelectedOption: null, // 临时选择的选项（未提交）
     encouragements: [
         '太棒了！继续加油！💪',
         '做得很好！👏',
@@ -361,9 +362,16 @@ function loadQuestion(questionIndex) {
     const question = ExamState.currentExam.questions[questionIndex];
     const container = document.getElementById('questionContainer');
     
+    // 清除临时选择状态
+    ExamState.tempSelectedOption = ExamState.userAnswers[questionIndex] || null;
+    
     // 更新并保存当前题号
     ExamState.currentExam.currentQuestionIndex = questionIndex;
     localStorage.setItem('currentExam', JSON.stringify(ExamState.currentExam));
+    
+    // 判断当前题是否已作答
+    const isAnswered = ExamState.userAnswers[questionIndex] !== undefined;
+    const isLastQuestion = questionIndex === ExamState.currentExam.totalQuestions - 1;
     
     // 创建题目HTML
     const questionHTML = `
@@ -383,7 +391,7 @@ function loadQuestion(questionIndex) {
         
         <ul class="option-list" id="optionList">
             ${question.options.map(option => {
-                const isSelected = ExamState.userAnswers[questionIndex] === option.id;
+                const isSelected = ExamState.tempSelectedOption === option.id;
                 return `
                     <li class="option-item ${isSelected ? 'selected' : ''}" 
                         data-option="${option.id}"
@@ -395,8 +403,21 @@ function loadQuestion(questionIndex) {
             }).join('')}
         </ul>
         
-        <div class="question-navigation">
-            <p class="hint">点击选项选择答案，选中的选项会高亮显示</p>
+        <div class="question-actions">
+            <p class="hint">
+                <i class="fas fa-lightbulb"></i> 
+                ${isAnswered ? '此题已作答，可重新选择并提交' : '请先选择答案，然后点击提交按钮'}
+            </p>
+            <div class="action-buttons">
+                <button class="btn btn-primary btn-submit" onclick="submitAnswer()" id="submitBtn">
+                    <i class="fas fa-check"></i> 提交答案
+                </button>
+                ${isLastQuestion ? `
+                    <button class="btn btn-warning" onclick="submitExam()">
+                        <i class="fas fa-paper-plane"></i> 交卷
+                    </button>
+                ` : ''}
+            </div>
         </div>
     `;
     
@@ -410,30 +431,39 @@ function loadQuestion(questionIndex) {
     updateNavigationButtons();
 }
 
-// 选择选项
+// 选择选项（仅标记，不提交）
 function selectOption(optionId) {
-    const questionIndex = ExamState.currentQuestionIndex;
-    const question = ExamState.currentExam.questions[questionIndex];
-    ExamState.userAnswers[questionIndex] = optionId;
+    ExamState.tempSelectedOption = optionId;
     
-    // 更新当前考试的答案
-    ExamState.currentExam.userAnswers[questionIndex] = optionId;
-    
-    // 保存到本地存储
-    localStorage.setItem('currentExam', JSON.stringify(ExamState.currentExam));
-    
-    // 更新UI
+    // 更新UI选中状态
     updateOptionSelection(optionId);
-    updateProgress();
+}
+
+// 提交当前题目答案
+function submitAnswer() {
+    const questionIndex = ExamState.currentQuestionIndex;
+    
+    // 检查是否已选择答案
+    if (!ExamState.tempSelectedOption) {
+        alert('请先选择一个答案！');
+        return;
+    }
+    
+    const question = ExamState.currentExam.questions[questionIndex];
+    const selectedAnswer = ExamState.tempSelectedOption;
+    
+    // 保存答案
+    ExamState.userAnswers[questionIndex] = selectedAnswer;
+    ExamState.currentExam.userAnswers[questionIndex] = selectedAnswer;
     
     // 检查答案是否正确
-    const isCorrect = optionId === question.correctAnswer;
+    const isCorrect = selectedAnswer === question.correctAnswer;
     
     // 🚗 收集零件
     PartsSystem.collectPart(questionIndex, isCorrect);
     showPartCollectionFeedback(questionIndex, isCorrect);
     
-    // 趣味反馈：检查答案是否正确并显示鼓励
+    // 趣味反馈
     if (isCorrect) {
         ExamState.correctStreak++;
         ExamState.totalCorrect++;
@@ -448,7 +478,26 @@ function selectOption(optionId) {
     }
     
     // 添加选择动画
-    addSelectionAnimation(optionId);
+    addSelectionAnimation(selectedAnswer);
+    
+    // 保存到本地存储
+    localStorage.setItem('currentExam', JSON.stringify(ExamState.currentExam));
+    
+    // 更新进度
+    updateProgress();
+    
+    // 自动跳转到下一题
+    setTimeout(() => {
+        if (questionIndex < ExamState.currentExam.totalQuestions - 1) {
+            // 还有下一题，跳转
+            goToNextQuestion();
+        } else {
+            // 最后一题，自动交卷
+            if (confirm('这是最后一题了！是否提交考卷？')) {
+                submitExam();
+            }
+        }
+    }, 1500); // 1.5秒后自动跳转
 }
 
 // 🚗 显示零件收集反馈
@@ -509,6 +558,7 @@ function goToNextQuestion() {
     
     if (ExamState.currentQuestionIndex < ExamState.currentExam.totalQuestions - 1) {
         ExamState.currentQuestionIndex++;
+        ExamState.tempSelectedOption = null; // 清除临时选择
         console.log('跳转到题号:', ExamState.currentQuestionIndex);
         loadQuestion(ExamState.currentQuestionIndex);
         updateProgress();
@@ -1349,6 +1399,7 @@ function playCrashTestAnimation(report) {
 
 // 导出到全局
 window.selectOption = selectOption;
+window.submitAnswer = submitAnswer;
 window.goToQuestion = goToQuestion;
 window.reviewExam = reviewExam;
 window.goToHome = goToHome;
