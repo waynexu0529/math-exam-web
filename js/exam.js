@@ -1114,27 +1114,37 @@ function startCrashTest() {
     const report = CrashTestSystem.generateReport();
     const container = document.getElementById('questionContainer');
     
+    // 第一阶段：准备界面
     let crashHTML = `
         <div class="crash-test-container">
             <div class="crash-header">
-                <h2><i class="fas fa-car-crash"></i> 碰撞测试中...</h2>
-                <p class="crash-subtitle">检测车辆安全性能</p>
+                <h2><i class="fas fa-car-crash"></i> 碰撞测试准备中...</h2>
+                <p class="crash-subtitle">即将开始安全性能检测</p>
             </div>
             
             <div class="crash-animation">
-                <div class="car-crash-scene">
-                    <div class="test-car ${report.canDrive ? 'car-intact' : 'car-damaged'}">
-                        🚗
-                    </div>
-                    <div class="crash-wall">🧱</div>
+                <div class="countdown-overlay" id="countdownOverlay">
+                    <div class="countdown-number" id="countdownNumber">3</div>
                 </div>
+                
+                <div class="car-crash-scene" id="crashScene">
+                    <div class="test-car" id="testCar">🚗</div>
+                    <div class="crash-wall" id="crashWall">🧱</div>
+                </div>
+                
+                <!-- 飞散的零件容器 -->
+                <div class="flying-parts" id="flyingParts"></div>
+                
+                <!-- 碰撞特效 -->
+                <div class="crash-impact" id="crashImpact">💥</div>
             </div>
             
-            <div class="crash-result">
-                <div class="rating-display" style="background: ${report.rating.color}">
+            <!-- 结果区域（初始隐藏） -->
+            <div class="crash-result" id="crashResult" style="display: none;">
+                <div class="rating-display" id="ratingDisplay" style="background: ${report.rating.color}">
                     <div class="rating-grade">${report.rating.grade}</div>
-                    <div class="rating-stars">
-                        ${'⭐'.repeat(report.rating.stars)}${'☆'.repeat(5 - report.rating.stars)}
+                    <div class="rating-stars" id="ratingStars">
+                        ${'☆'.repeat(5)}
                     </div>
                     <div class="rating-title">${report.rating.title}</div>
                 </div>
@@ -1177,7 +1187,7 @@ function startCrashTest() {
                 </div>
             </div>
             
-            <div class="crash-actions">
+            <div class="crash-actions" id="crashActions" style="display: none;">
                 <button class="btn btn-primary" onclick="reviewExam()">
                     <i class="fas fa-tools"></i> 修复零件（查看解析）
                 </button>
@@ -1190,10 +1200,151 @@ function startCrashTest() {
     
     container.innerHTML = crashHTML;
     
-    // 播放碰撞动画
-    setTimeout(() => {
-        document.querySelector('.test-car').classList.add('crash-animation-active');
-    }, 500);
+    // 开始动画序列
+    playCrashTestAnimation(report);
+}
+
+// 🎬 播放完整碰撞测试动画
+function playCrashTestAnimation(report) {
+    const countdown = document.getElementById('countdownNumber');
+    const countdownOverlay = document.getElementById('countdownOverlay');
+    const testCar = document.getElementById('testCar');
+    const crashWall = document.getElementById('crashWall');
+    const crashImpact = document.getElementById('crashImpact');
+    const flyingParts = document.getElementById('flyingParts');
+    const crashResult = document.getElementById('crashResult');
+    const crashActions = document.getElementById('crashActions');
+    
+    // 阶段1：倒计时 3、2、1
+    let count = 3;
+    const countdownInterval = setInterval(() => {
+        count--;
+        if (count > 0) {
+            countdown.textContent = count;
+            countdown.style.animation = 'none';
+            setTimeout(() => {
+                countdown.style.animation = 'countPulse 1s ease-out';
+            }, 10);
+        } else {
+            countdown.textContent = 'GO!';
+            countdown.style.color = '#52c41a';
+            countdown.style.animation = 'countExplode 0.5s ease-out';
+            clearInterval(countdownInterval);
+            
+            // 0.5秒后开始加速
+            setTimeout(() => {
+                countdownOverlay.style.opacity = '0';
+                setTimeout(() => {
+                    countdownOverlay.style.display = 'none';
+                    startCarAcceleration();
+                }, 300);
+            }, 500);
+        }
+    }, 1000);
+    
+    // 阶段2：车辆加速
+    function startCarAcceleration() {
+        testCar.classList.add('car-accelerating');
+        
+        // 1.5秒后碰撞
+        setTimeout(() => {
+            triggerCrashImpact();
+        }, 1500);
+    }
+    
+    // 阶段3：碰撞瞬间
+    function triggerCrashImpact() {
+        // 车辆碰撞动画
+        testCar.classList.remove('car-accelerating');
+        testCar.classList.add('car-crashing');
+        
+        // 墙壁震动
+        crashWall.classList.add('wall-shake');
+        
+        // 碰撞特效
+        crashImpact.style.display = 'block';
+        crashImpact.classList.add('impact-show');
+        
+        // 屏幕震动
+        document.querySelector('.crash-animation').classList.add('screen-shake');
+        
+        // 受损零件飞出
+        setTimeout(() => {
+            showFlyingParts(report.damagedParts);
+        }, 300);
+        
+        // 1秒后显示结果
+        setTimeout(() => {
+            showTestResults(report);
+        }, 2000);
+    }
+    
+    // 阶段4：零件飞散
+    function showFlyingParts(damagedParts) {
+        damagedParts.forEach((part, index) => {
+            setTimeout(() => {
+                const partElement = document.createElement('div');
+                partElement.className = 'flying-part';
+                partElement.textContent = part.icon;
+                partElement.style.left = '30%';
+                partElement.style.top = '50%';
+                
+                // 随机飞行方向
+                const angle = Math.random() * 360;
+                const distance = 100 + Math.random() * 150;
+                const x = Math.cos(angle * Math.PI / 180) * distance;
+                const y = Math.sin(angle * Math.PI / 180) * distance;
+                
+                partElement.style.setProperty('--fly-x', `${x}px`);
+                partElement.style.setProperty('--fly-y', `${y}px`);
+                
+                flyingParts.appendChild(partElement);
+                
+                setTimeout(() => {
+                    partElement.classList.add('fly-out');
+                }, 50);
+                
+                // 2秒后移除
+                setTimeout(() => {
+                    partElement.remove();
+                }, 2000);
+            }, index * 100);
+        });
+    }
+    
+    // 阶段5：显示评分结果
+    function showTestResults(report) {
+        crashResult.style.display = 'block';
+        crashResult.style.animation = 'resultFadeIn 0.8s ease-out';
+        
+        // 星级逐个点亮
+        setTimeout(() => {
+            lightUpStars(report.rating.stars);
+        }, 500);
+        
+        // 显示操作按钮
+        setTimeout(() => {
+            crashActions.style.display = 'flex';
+            crashActions.style.animation = 'fadeInUp 0.6s ease-out';
+        }, 1500);
+    }
+    
+    // 星级点亮动画
+    function lightUpStars(starCount) {
+        const starsContainer = document.getElementById('ratingStars');
+        let currentStar = 0;
+        
+        const starInterval = setInterval(() => {
+            if (currentStar < starCount) {
+                const stars = '⭐'.repeat(currentStar + 1) + '☆'.repeat(5 - currentStar - 1);
+                starsContainer.textContent = stars;
+                starsContainer.style.animation = 'starPop 0.3s ease-out';
+                currentStar++;
+            } else {
+                clearInterval(starInterval);
+            }
+        }, 200);
+    }
 }
 
 // 导出到全局

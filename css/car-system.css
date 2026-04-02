@@ -319,74 +319,245 @@
     border-radius: 20px;
     padding: 60px;
     margin-bottom: 40px;
-    min-height: 300px;
+    min-height: 400px;
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
+    overflow: hidden;
 }
 
+/* 倒计时覆盖层 */
+.countdown-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: opacity 0.3s ease-out;
+}
+
+.countdown-number {
+    font-size: 10em;
+    font-weight: bold;
+    color: #ffd700;
+    text-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+}
+
+@keyframes countPulse {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes countExplode {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.5);
+    }
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+/* 碰撞场景 */
 .car-crash-scene {
     display: flex;
     align-items: center;
-    gap: 100px;
+    gap: 150px;
     position: relative;
 }
 
 .test-car {
     font-size: 6em;
-    transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    position: relative;
+    transform-origin: center;
 }
 
-.test-car.crash-animation-active {
-    animation: crashImpact 1s ease-out forwards;
+/* 车辆加速动画 */
+.car-accelerating {
+    animation: carAccelerate 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
-@keyframes crashImpact {
+@keyframes carAccelerate {
     0% {
-        transform: translateX(0) rotate(0deg);
-    }
-    60% {
-        transform: translateX(50px) rotate(-5deg);
-    }
-    80% {
-        transform: translateX(-10px) rotate(2deg);
+        transform: translateX(0) scale(1);
     }
     100% {
-        transform: translateX(0) rotate(0deg);
+        transform: translateX(80px) scale(1.1);
     }
 }
 
-.test-car.car-damaged.crash-animation-active {
-    animation: crashDamage 1s ease-out forwards;
+/* 车辆碰撞动画 */
+.car-crashing {
+    animation: carCrash 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
 }
 
-@keyframes crashDamage {
+@keyframes carCrash {
     0% {
-        transform: translateX(0) rotate(0deg);
-        filter: none;
+        transform: translateX(80px) scale(1.1);
+    }
+    30% {
+        transform: translateX(85px) scale(1.1) rotate(-10deg);
     }
     60% {
-        transform: translateX(50px) rotate(-15deg) scale(0.9);
-    }
-    80% {
-        transform: translateX(-15px) rotate(5deg) scale(0.95);
-        filter: blur(2px);
+        transform: translateX(70px) scale(0.95) rotate(5deg);
+        filter: brightness(1.5);
     }
     100% {
-        transform: translateX(0) rotate(-2deg) scale(0.98);
-        filter: grayscale(0.3) brightness(0.8);
+        transform: translateX(60px) scale(0.9) rotate(-3deg);
+        filter: brightness(0.8) grayscale(0.3);
     }
 }
 
+/* 墙壁震动 */
 .crash-wall {
     font-size: 6em;
-    animation: wallShake 1s ease-out 0.5s;
 }
 
-@keyframes wallShake {
+.wall-shake {
+    animation: wallShakeEffect 0.5s ease-out;
+}
+
+@keyframes wallShakeEffect {
+    0%, 100% { transform: translateX(0) rotate(0deg); }
+    10% { transform: translateX(-10px) rotate(-2deg); }
+    20% { transform: translateX(10px) rotate(2deg); }
+    30% { transform: translateX(-8px) rotate(-1deg); }
+    40% { transform: translateX(8px) rotate(1deg); }
+    50% { transform: translateX(-5px) rotate(-0.5deg); }
+    60% { transform: translateX(5px) rotate(0.5deg); }
+    70% { transform: translateX(-3px) rotate(0deg); }
+    80% { transform: translateX(3px) rotate(0deg); }
+    90% { transform: translateX(-1px) rotate(0deg); }
+}
+
+/* 碰撞冲击特效 */
+.crash-impact {
+    position: absolute;
+    font-size: 12em;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+    display: none;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.impact-show {
+    display: block !important;
+    animation: impactExplode 0.8s ease-out forwards;
+}
+
+@keyframes impactExplode {
+    0% {
+        transform: translate(-50%, -50%) scale(0) rotate(0deg);
+        opacity: 0;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.5) rotate(180deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(3) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* 屏幕震动 */
+.screen-shake {
+    animation: screenShakeEffect 0.5s ease-out;
+}
+
+@keyframes screenShakeEffect {
     0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+/* 飞散零件 */
+.flying-parts {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 8;
+}
+
+.flying-part {
+    position: absolute;
+    font-size: 3em;
+    opacity: 1;
+    transition: none;
+}
+
+.flying-part.fly-out {
+    animation: partFlyOut 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes partFlyOut {
+    0% {
+        transform: translate(0, 0) rotate(0deg) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(var(--fly-x), var(--fly-y)) rotate(720deg) scale(0.3);
+        opacity: 0;
+    }
+}
+
+/* 碰撞结果动画 */
+@keyframes resultFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes starPop {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
 }
 
 /* 碰撞评级显示 */
