@@ -1128,7 +1128,7 @@ function startCrashTest() {
                 </div>
                 
                 <div class="car-crash-scene" id="crashScene">
-                    <div class="test-car" id="testCar">🚗</div>
+                    <div class="test-car" id="testCar">🚙</div>
                     <div class="crash-wall" id="crashWall">🧱</div>
                 </div>
                 

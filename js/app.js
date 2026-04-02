@@ -206,6 +206,326 @@ function initQuestionBank() {
             knowledgePoints: ['time_calculation', 'addition'],
             difficulty: 'easy',
             estimatedTime: 35
+        },
+        {
+            id: 11,
+            type: 'single_choice',
+            content: '456 - 289 = ?',
+            options: [
+                { id: 'A', text: '157' },
+                { id: 'B', text: '167' },
+                { id: 'C', text: '177' },
+                { id: 'D', text: '187' }
+            ],
+            correctAnswer: 'B',
+            explanation: '456 - 289 = 167。可以用竖式计算或分步计算：456 - 200 = 256，256 - 89 = 167。',
+            knowledgePoints: ['subtraction', 'three_digit'],
+            difficulty: 'medium',
+            estimatedTime: 40
+        },
+        {
+            id: 12,
+            type: 'single_choice',
+            content: '一本书有120页，小红已经看了5天，每天看12页，还剩多少页没看？',
+            options: [
+                { id: 'A', text: '50页' },
+                { id: 'B', text: '60页' },
+                { id: 'C', text: '70页' },
+                { id: 'D', text: '80页' }
+            ],
+            correctAnswer: 'B',
+            explanation: '已看：12 × 5 = 60页，还剩：120 - 60 = 60页。',
+            knowledgePoints: ['multiplication', 'subtraction', 'word_problems'],
+            difficulty: 'medium',
+            estimatedTime: 45
+        },
+        {
+            id: 13,
+            type: 'single_choice',
+            content: '7 × 8 = ?',
+            options: [
+                { id: 'A', text: '54' },
+                { id: 'B', text: '56' },
+                { id: 'C', text: '58' },
+                { id: 'D', text: '63' }
+            ],
+            correctAnswer: 'B',
+            explanation: '7 × 8 = 56。可以记住口诀：七八五十六。',
+            knowledgePoints: ['multiplication', 'multiplication_table'],
+            difficulty: 'easy',
+            estimatedTime: 25
+        },
+        {
+            id: 14,
+            type: 'single_choice',
+            content: '一个长方形长10厘米，宽6厘米，它的面积是多少平方厘米？',
+            options: [
+                { id: 'A', text: '16' },
+                { id: 'B', text: '32' },
+                { id: 'C', text: '60' },
+                { id: 'D', text: '100' }
+            ],
+            correctAnswer: 'C',
+            explanation: '长方形面积 = 长 × 宽 = 10 × 6 = 60平方厘米。',
+            knowledgePoints: ['area', 'rectangle', 'multiplication'],
+            difficulty: 'medium',
+            estimatedTime: 35
+        },
+        {
+            id: 15,
+            type: 'single_choice',
+            content: '下面哪个数最接近500？',
+            options: [
+                { id: 'A', text: '398' },
+                { id: 'B', text: '456' },
+                { id: 'C', text: '512' },
+                { id: 'D', text: '589' }
+            ],
+            correctAnswer: 'C',
+            explanation: '500 - 398 = 102，500 - 456 = 44，512 - 500 = 12，589 - 500 = 89。所以512最接近500。',
+            knowledgePoints: ['number_sense', 'estimation'],
+            difficulty: 'medium',
+            estimatedTime: 40
+        },
+        {
+            id: 16,
+            type: 'single_choice',
+            content: '72 ÷ 9 = ?',
+            options: [
+                { id: 'A', text: '6' },
+                { id: 'B', text: '7' },
+                { id: 'C', text: '8' },
+                { id: 'D', text: '9' }
+            ],
+            correctAnswer: 'C',
+            explanation: '72 ÷ 9 = 8。可以用口诀：九八七十二。',
+            knowledgePoints: ['division', 'division_table'],
+            difficulty: 'easy',
+            estimatedTime: 25
+        },
+        {
+            id: 17,
+            type: 'single_choice',
+            content: '小华有36颗糖，分给9个小朋友，每人能分到几颗？',
+            options: [
+                { id: 'A', text: '3颗' },
+                { id: 'B', text: '4颗' },
+                { id: 'C', text: '5颗' },
+                { id: 'D', text: '6颗' }
+            ],
+            correctAnswer: 'B',
+            explanation: '36 ÷ 9 = 4，所以每人能分到4颗糖。',
+            knowledgePoints: ['division', 'equal_distribution'],
+            difficulty: 'easy',
+            estimatedTime: 30
+        },
+        {
+            id: 18,
+            type: 'single_choice',
+            content: '下面哪个角是直角？',
+            options: [
+                { id: 'A', text: '30度的角' },
+                { id: 'B', text: '60度的角' },
+                { id: 'C', text: '90度的角' },
+                { id: 'D', text: '120度的角' }
+            ],
+            correctAnswer: 'C',
+            explanation: '直角是90度的角。',
+            knowledgePoints: ['angles', 'geometry'],
+            difficulty: 'easy',
+            estimatedTime: 30
+        },
+        {
+            id: 19,
+            type: 'single_choice',
+            content: '一个正方形的周长是20厘米，它的边长是多少厘米？',
+            options: [
+                { id: 'A', text: '4厘米' },
+                { id: 'B', text: '5厘米' },
+                { id: 'C', text: '10厘米' },
+                { id: 'D', text: '20厘米' }
+            ],
+            correctAnswer: 'B',
+            explanation: '正方形边长 = 周长 ÷ 4 = 20 ÷ 4 = 5厘米。',
+            knowledgePoints: ['perimeter', 'square', 'division'],
+            difficulty: 'medium',
+            estimatedTime: 40
+        },
+        {
+            id: 20,
+            type: 'single_choice',
+            content: '569 + 348 = ?',
+            options: [
+                { id: 'A', text: '807' },
+                { id: 'B', text: '817' },
+                { id: 'C', text: '907' },
+                { id: 'D', text: '917' }
+            ],
+            correctAnswer: 'D',
+            explanation: '569 + 348 = 917。可以分步计算：500 + 300 = 800，60 + 40 = 100，9 + 8 = 17，800 + 100 + 17 = 917。',
+            knowledgePoints: ['addition', 'three_digit'],
+            difficulty: 'medium',
+            estimatedTime: 40
+        },
+        {
+            id: 21,
+            type: 'single_choice',
+            content: '5 × 6 + 7 = ?',
+            options: [
+                { id: 'A', text: '35' },
+                { id: 'B', text: '37' },
+                { id: 'C', text: '42' },
+                { id: 'D', text: '47' }
+            ],
+            correctAnswer: 'B',
+            explanation: '先算乘法：5 × 6 = 30，再算加法：30 + 7 = 37。',
+            knowledgePoints: ['mixed_operations', 'order_of_operations'],
+            difficulty: 'easy',
+            estimatedTime: 30
+        },
+        {
+            id: 22,
+            type: 'single_choice',
+            content: '一根绳子长24米，剪成4段，每段长多少米？',
+            options: [
+                { id: 'A', text: '4米' },
+                { id: 'B', text: '5米' },
+                { id: 'C', text: '6米' },
+                { id: 'D', text: '8米' }
+            ],
+            correctAnswer: 'C',
+            explanation: '24 ÷ 4 = 6，所以每段长6米。',
+            knowledgePoints: ['division', 'equal_parts'],
+            difficulty: 'easy',
+            estimatedTime: 30
+        },
+        {
+            id: 23,
+            type: 'single_choice',
+            content: '下面哪个分数最大？',
+            options: [
+                { id: 'A', text: '1/2' },
+                { id: 'B', text: '1/3' },
+                { id: 'C', text: '1/4' },
+                { id: 'D', text: '1/5' }
+            ],
+            correctAnswer: 'A',
+            explanation: '分母越小，分数越大。所以1/2最大。',
+            knowledgePoints: ['fractions', 'comparison'],
+            difficulty: 'medium',
+            estimatedTime: 40
+        },
+        {
+            id: 24,
+            type: 'single_choice',
+            content: '商店有48个苹果，每6个装一盒，可以装几盒？',
+            options: [
+                { id: 'A', text: '6盒' },
+                { id: 'B', text: '7盒' },
+                { id: 'C', text: '8盒' },
+                { id: 'D', text: '9盒' }
+            ],
+            correctAnswer: 'C',
+            explanation: '48 ÷ 6 = 8，可以装8盒。',
+            knowledgePoints: ['division', 'grouping'],
+            difficulty: 'easy',
+            estimatedTime: 30
+        },
+        {
+            id: 25,
+            type: 'single_choice',
+            content: '12 × 5 = ?',
+            options: [
+                { id: 'A', text: '50' },
+                { id: 'B', text: '55' },
+                { id: 'C', text: '60' },
+                { id: 'D', text: '65' }
+            ],
+            correctAnswer: 'C',
+            explanation: '12 × 5 = 60。可以用10 × 5 = 50，2 × 5 = 10，50 + 10 = 60。',
+            knowledgePoints: ['multiplication', 'strategies'],
+            difficulty: 'easy',
+            estimatedTime: 30
+        },
+        {
+            id: 26,
+            type: 'single_choice',
+            content: '一个班有40名学生，其中女生24名，男生有多少名？',
+            options: [
+                { id: 'A', text: '14名' },
+                { id: 'B', text: '16名' },
+                { id: 'C', text: '18名' },
+                { id: 'D', text: '20名' }
+            ],
+            correctAnswer: 'B',
+            explanation: '40 - 24 = 16，所以男生有16名。',
+            knowledgePoints: ['subtraction', 'word_problems'],
+            difficulty: 'easy',
+            estimatedTime: 30
+        },
+        {
+            id: 27,
+            type: 'single_choice',
+            content: '下面哪个图形有4条边？',
+            options: [
+                { id: 'A', text: '三角形' },
+                { id: 'B', text: '四边形' },
+                { id: 'C', text: '五边形' },
+                { id: 'D', text: '圆形' }
+            ],
+            correctAnswer: 'B',
+            explanation: '四边形有4条边。',
+            knowledgePoints: ['shapes', 'polygon'],
+            difficulty: 'easy',
+            estimatedTime: 25
+        },
+        {
+            id: 28,
+            type: 'single_choice',
+            content: '800 - 356 = ?',
+            options: [
+                { id: 'A', text: '434' },
+                { id: 'B', text: '444' },
+                { id: 'C', text: '454' },
+                { id: 'D', text: '464' }
+            ],
+            correctAnswer: 'B',
+            explanation: '800 - 356 = 444。',
+            knowledgePoints: ['subtraction', 'three_digit'],
+            difficulty: 'medium',
+            estimatedTime: 40
+        },
+        {
+            id: 29,
+            type: 'single_choice',
+            content: '一个长方形长12厘米，宽5厘米，周长是多少厘米？',
+            options: [
+                { id: 'A', text: '17厘米' },
+                { id: 'B', text: '24厘米' },
+                { id: 'C', text: '34厘米' },
+                { id: 'D', text: '60厘米' }
+            ],
+            correctAnswer: 'C',
+            explanation: '周长 = (长 + 宽) × 2 = (12 + 5) × 2 = 34厘米。',
+            knowledgePoints: ['perimeter', 'rectangle'],
+            difficulty: 'medium',
+            estimatedTime: 40
+        },
+        {
+            id: 30,
+            type: 'single_choice',
+            content: '9 × 9 = ?',
+            options: [
+                { id: 'A', text: '72' },
+                { id: 'B', text: '81' },
+                { id: 'C', text: '90' },
+                { id: 'D', text: '99' }
+            ],
+            correctAnswer: 'B',
+            explanation: '9 × 9 = 81。可以记住口诀：九九八十一。',
+            knowledgePoints: ['multiplication', 'multiplication_table'],
+            difficulty: 'easy',
+            estimatedTime: 25
         }
     ];
     

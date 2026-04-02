@@ -388,6 +388,7 @@
     font-size: 6em;
     position: relative;
     transform-origin: center;
+    transform: scaleX(-1); /* 水平翻转，让车头朝右 */
 }
 
 /* 车辆加速动画 */
@@ -397,10 +398,10 @@
 
 @keyframes carAccelerate {
     0% {
-        transform: translateX(0) scale(1);
+        transform: scaleX(-1) translateX(0) scale(1);
     }
     100% {
-        transform: translateX(80px) scale(1.1);
+        transform: scaleX(-1) translateX(80px) scale(1.1);
     }
 }
 
@@ -411,17 +412,17 @@
 
 @keyframes carCrash {
     0% {
-        transform: translateX(80px) scale(1.1);
+        transform: scaleX(-1) translateX(80px) scale(1.1);
     }
     30% {
-        transform: translateX(85px) scale(1.1) rotate(-10deg);
+        transform: scaleX(-1) translateX(85px) scale(1.1) rotate(-10deg);
     }
     60% {
-        transform: translateX(70px) scale(0.95) rotate(5deg);
+        transform: scaleX(-1) translateX(70px) scale(0.95) rotate(5deg);
         filter: brightness(1.5);
     }
     100% {
-        transform: translateX(60px) scale(0.9) rotate(-3deg);
+        transform: scaleX(-1) translateX(60px) scale(0.9) rotate(-3deg);
         filter: brightness(0.8) grayscale(0.3);
     }
 }
