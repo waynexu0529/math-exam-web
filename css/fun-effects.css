@@ -1,0 +1,258 @@
+/* 趣味互动功能样式 */
+
+/* 鼓励提示框 */
+.encouragement-toast {
+    position: fixed;
+    top: 100px;
+    right: 30px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.1em;
+    font-weight: 500;
+    opacity: 0;
+    transform: translateX(400px);
+    transition: all 0.3s ease-out;
+    z-index: 9999;
+}
+
+.encouragement-toast.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.encouragement-toast i {
+    font-size: 1.3em;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 连击效果 */
+.streak-effect {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: rgba(255, 87, 34, 0.95);
+    color: white;
+    padding: 30px 50px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(255, 87, 34, 0.5);
+    text-align: center;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    z-index: 9999;
+}
+
+.streak-effect.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.streak-icon {
+    font-size: 4em;
+    margin-bottom: 10px;
+    animation: pulse 0.6s ease-in-out infinite;
+}
+
+.streak-text {
+    font-size: 2em;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+/* 选项选择动画 */
+.option-selected-animation {
+    animation: selectPulse 0.6s ease-out;
+}
+
+@keyframes selectPulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 10px rgba(102, 126, 234, 0);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(102, 126, 234, 0);
+    }
+}
+
+/* 成就徽章 */
+.achievement-badge {
+    display: inline-block;
+    padding: 20px 40px;
+    border-radius: 50px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    animation: badgeAppear 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes badgeAppear {
+    0% {
+        opacity: 0;
+        transform: scale(0) rotate(-180deg);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+.badge-icon {
+    font-size: 3em;
+    margin-bottom: 5px;
+}
+
+.badge-title {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+/* 彩带动画 */
+.confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    top: -10px;
+    z-index: 9998;
+    animation: fall linear forwards;
+}
+
+@keyframes fall {
+    to {
+        transform: translateY(100vh) rotate(360deg);
+    }
+}
+
+/* 题目切换动画 */
+.question-container {
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 进度按钮动画 */
+.progress-btn {
+    transition: all 0.3s ease;
+}
+
+.progress-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.progress-btn.answered {
+    animation: checkmark 0.5s ease-out;
+}
+
+@keyframes checkmark {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* 结果页面详情卡片动画 */
+.detail-card {
+    animation: slideInUp 0.6s ease-out;
+    animation-fill-mode: both;
+}
+
+.detail-card:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.detail-card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 分数圈动画 */
+.score-circle {
+    animation: scaleIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes scaleIn {
+    0% {
+        opacity: 0;
+        transform: scale(0);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+    .encouragement-toast {
+        top: 80px;
+        right: 15px;
+        padding: 12px 20px;
+        font-size: 1em;
+    }
+    
+    .streak-effect {
+        padding: 20px 30px;
+    }
+    
+    .streak-icon {
+        font-size: 3em;
+    }
+    
+    .streak-text {
+        font-size: 1.5em;
+    }
+    
+    .badge-icon {
+        font-size: 2.5em;
+    }
+    
+    .badge-title {
+        font-size: 1.2em;
+    }
+}

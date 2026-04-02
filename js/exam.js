@@ -11,7 +11,19 @@ const ExamState = {
     userAnswers: [],
     timer: null,
     timeRemaining: 1800, // 30分钟 = 1800秒
-    isSubmitted: false
+    isSubmitted: false,
+    correctStreak: 0, // 连续答对数
+    totalCorrect: 0, // 总答对数
+    encouragements: [
+        '太棒了！继续加油！💪',
+        '做得很好！👏',
+        '你真聪明！🌟',
+        '完美答题！✨',
+        '继续保持！🎯',
+        '非常棒！🎉',
+        '你是数学小天才！🌈',
+        '干得漂亮！🎪'
+    ]
 };
 
 // 初始化考试
@@ -397,6 +409,7 @@ function loadQuestion(questionIndex) {
 // 选择选项
 function selectOption(optionId) {
     const questionIndex = ExamState.currentQuestionIndex;
+    const question = ExamState.currentExam.questions[questionIndex];
     ExamState.userAnswers[questionIndex] = optionId;
     
     // 更新当前考试的答案
@@ -408,6 +421,23 @@ function selectOption(optionId) {
     // 更新UI
     updateOptionSelection(optionId);
     updateProgress();
+    
+    // 趣味反馈：检查答案是否正确并显示鼓励
+    if (optionId === question.correctAnswer) {
+        ExamState.correctStreak++;
+        ExamState.totalCorrect++;
+        showEncouragement();
+        
+        // 连击效果
+        if (ExamState.correctStreak >= 3) {
+            showStreakEffect(ExamState.correctStreak);
+        }
+    } else {
+        ExamState.correctStreak = 0;
+    }
+    
+    // 添加选择动画
+    addSelectionAnimation(optionId);
 }
 
 // 更新选项选择状态
@@ -639,10 +669,15 @@ function saveWrongQuestions() {
 function showExamResult(score) {
     const correctCount = Math.floor(parseFloat(score) / 100 * ExamState.currentExam.totalQuestions);
     const wrongCount = ExamState.currentExam.totalQuestions - correctCount;
+    const achievement = showAchievementBadge(parseFloat(score));
     
     const resultHTML = `
         <div class="exam-result">
             <div class="result-header">
+                <div class="achievement-badge" style="background: ${achievement.color}">
+                    <div class="badge-icon">${achievement.badge}</div>
+                    <div class="badge-title">${achievement.message}</div>
+                </div>
                 <h2>考试完成！</h2>
                 <p class="result-subtitle">三年级数学考试结果</p>
             </div>
@@ -657,18 +692,19 @@ function showExamResult(score) {
             
             <div class="result-details">
                 <div class="detail-card">
-                    <h4>答题情况</h4>
-                    <p>总题数: ${ExamState.currentExam.totalQuestions}</p>
-                    <p>答对: ${correctCount} 题</p>
-                    <p>答错: ${wrongCount} 题</p>
-                    <p>正确率: ${score}%</p>
+                    <h4><i class="fas fa-clipboard-check"></i> 答题情况</h4>
+                    <p>📝 总题数: ${ExamState.currentExam.totalQuestions}</p>
+                    <p>✅ 答对: ${correctCount} 题</p>
+                    <p>❌ 答错: ${wrongCount} 题</p>
+                    <p>📊 正确率: ${score}%</p>
+                    ${ExamState.correctStreak > 0 ? `<p>🔥 最高连击: ${ExamState.correctStreak}</p>` : ''}
                 </div>
                 
                 <div class="detail-card">
-                    <h4>时间统计</h4>
-                    <p>开始时间: ${new Date(ExamState.currentExam.startTime).toLocaleTimeString()}</p>
-                    <p>结束时间: ${new Date().toLocaleTimeString()}</p>
-                    <p>用时: ${Math.floor((1800 - ExamState.timeRemaining) / 60)}分${(1800 - ExamState.timeRemaining) % 60}秒</p>
+                    <h4><i class="fas fa-clock"></i> 时间统计</h4>
+                    <p>🕐 开始时间: ${new Date(ExamState.currentExam.startTime).toLocaleTimeString()}</p>
+                    <p>🕑 结束时间: ${new Date().toLocaleTimeString()}</p>
+                    <p>⏱️ 用时: ${Math.floor((1800 - ExamState.timeRemaining) / 60)}分${(1800 - ExamState.timeRemaining) % 60}秒</p>
                 </div>
             </div>
             
@@ -690,6 +726,33 @@ function showExamResult(score) {
     
     // 隐藏考试控制按钮
     document.querySelector('.exam-controls').style.display = 'none';
+    
+    // 显示庆祝动画
+    showCelebrationAnimation(parseFloat(score));
+}
+
+// 🎊 庆祝动画
+function showCelebrationAnimation(score) {
+    if (score >= 60) {
+        // 创建彩带效果
+        for (let i = 0; i < 50; i++) {
+            setTimeout(() => {
+                createConfetti();
+            }, i * 30);
+        }
+    }
+}
+
+// 创建单个彩带
+function createConfetti() {
+    const confetti = document.createElement('div');
+    confetti.className = 'confetti';
+    confetti.style.left = Math.random() * 100 + '%';
+    confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+    confetti.style.backgroundColor = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#ffd93d', '#6bcf7f'][Math.floor(Math.random() * 5)];
+    document.body.appendChild(confetti);
+    
+    setTimeout(() => confetti.remove(), 5000);
 }
 
 // 查看答案解析
@@ -822,6 +885,87 @@ function getDifficultyText(difficulty) {
         'hard': '困难'
     };
     return difficultyMap[difficulty] || difficulty;
+}
+
+// 🎉 趣味功能：显示鼓励语
+function showEncouragement() {
+    const encouragement = ExamState.encouragements[
+        Math.floor(Math.random() * ExamState.encouragements.length)
+    ];
+    
+    const toast = document.createElement('div');
+    toast.className = 'encouragement-toast';
+    toast.innerHTML = `
+        <i class="fas fa-star"></i>
+        <span>${encouragement}</span>
+    `;
+    document.body.appendChild(toast);
+    
+    // 动画效果
+    setTimeout(() => toast.classList.add('show'), 10);
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 2000);
+}
+
+// 🔥 连击效果
+function showStreakEffect(streak) {
+    const streakDiv = document.createElement('div');
+    streakDiv.className = 'streak-effect';
+    streakDiv.innerHTML = `
+        <div class="streak-icon">🔥</div>
+        <div class="streak-text">${streak} 连击！</div>
+    `;
+    document.body.appendChild(streakDiv);
+    
+    setTimeout(() => streakDiv.classList.add('show'), 10);
+    setTimeout(() => {
+        streakDiv.classList.remove('show');
+        setTimeout(() => streakDiv.remove(), 300);
+    }, 2500);
+}
+
+// ✨ 选择动画
+function addSelectionAnimation(optionId) {
+    const selectedOption = document.querySelector(`[data-option="${optionId}"]`);
+    if (selectedOption) {
+        selectedOption.classList.add('option-selected-animation');
+        setTimeout(() => {
+            selectedOption.classList.remove('option-selected-animation');
+        }, 600);
+    }
+}
+
+// 🏆 显示成就徽章
+function showAchievementBadge(score) {
+    let badge = '';
+    let message = '';
+    let color = '';
+    
+    if (score >= 95) {
+        badge = '🏆';
+        message = '完美大师';
+        color = '#ffd700';
+    } else if (score >= 85) {
+        badge = '🥇';
+        message = '优秀学霸';
+        color = '#ff6b6b';
+    } else if (score >= 75) {
+        badge = '🥈';
+        message = '良好成绩';
+        color = '#c0c0c0';
+    } else if (score >= 60) {
+        badge = '🥉';
+        message = '继续努力';
+        color = '#cd7f32';
+    } else {
+        badge = '💪';
+        message = '加油进步';
+        color = '#95a5a6';
+    }
+    
+    return { badge, message, color };
 }
 
 // 导出到全局
