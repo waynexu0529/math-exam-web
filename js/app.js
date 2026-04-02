@@ -529,6 +529,19 @@ function initQuestionBank() {
         }
     ];
     
+    // 添加章节信息到每道题
+    AppState.questions = AppState.questions.map(q => {
+        const chapterMap = {
+            1: ['ch3'], 2: ['ch3'], 3: ['ch4'], 4: ['ch5'], 5: ['ch2'],
+            6: ['ch1'], 7: ['ch5'], 8: ['ch7'], 9: ['ch4'], 10: ['ch7'],
+            11: ['ch3'], 12: ['ch1', 'ch4'], 13: ['ch6'], 14: ['ch5'], 15: ['ch3'],
+            16: ['ch4'], 17: ['ch4'], 18: ['ch2'], 19: ['ch5'], 20: ['ch3'],
+            21: ['ch1'], 22: ['ch4'], 23: ['ch10'], 24: ['ch4'], 25: ['ch6'],
+            26: ['ch3'], 27: ['ch2'], 28: ['ch3'], 29: ['ch5'], 30: ['ch6']
+        };
+        return { ...q, chapters: chapterMap[q.id] || ['ch1'] };
+    });
+    
     console.log('✅ 题库初始化完成，共', AppState.questions.length, '道题');
 }
 
@@ -649,36 +662,22 @@ function handleLogin(e) {
 }
 
 // 开始考试
+// 开始考试（带章节选择）
 function startExam(questionCount = 10) {
     if (!AppState.isLoggedIn) {
         showLoginModal();
         return;
     }
     
-    // 创建考试对象
-    AppState.currentExam = {
-        id: 'exam_' + Date.now(),
-        startTime: new Date(),
-        questions: getRandomQuestions(questionCount),
-        currentQuestionIndex: 0,
-        userAnswers: [],
-        score: 0,
-        totalQuestions: questionCount
-    };
-    
-    // 保存考试状态
-    localStorage.setItem('currentExam', JSON.stringify(AppState.currentExam));
-    
-    // 跳转到考试页面
-    window.location.href = 'exam.html';
-    
-    console.log('开始考试:', AppState.currentExam);
+    // 显示章节选择界面
+    showChapterSelection(questionCount, true); // true表示可多选
 }
 
 // 获取随机题目
-function getRandomQuestions(count) {
+function getRandomQuestions(count, questionPool = null) {
+    const pool = questionPool || AppState.questions;
     // 使用正确的Fisher-Yates洗牌算法
-    const shuffled = MathExamUtils.shuffleArray(AppState.questions);
+    const shuffled = MathExamUtils.shuffleArray([...pool]);
     return shuffled.slice(0, count);
 }
 
@@ -689,9 +688,138 @@ function startDailyPractice() {
         return;
     }
     
-    // 每日练习固定5道题
-    startExam(5);
+    // 显示章节选择界面
+    showChapterSelection(5, false); // false表示单选
 }
+
+// 显示章节选择界面
+function showChapterSelection(questionCount, multiSelect) {
+    const modal = document.createElement('div');
+    modal.className = 'chapter-modal';
+    modal.id = 'chapterModal';
+    
+    const chapters = ChapterSystem.chapters;
+    
+    modal.innerHTML = `
+        <div class="chapter-modal-content">
+            <div class="chapter-modal-header">
+                <h2><i class="fas fa-book"></i> 选择章节</h2>
+                <p class="chapter-subtitle">${multiSelect ? '可以选择多个章节（至少选1个）' : '请选择一个章节'}</p>
+                <span class="chapter-close" onclick="closeChapterModal()">&times;</span>
+            </div>
+            
+            <div class="chapter-grid">
+                ${chapters.map(chapter => {
+                    const count = AppState.questions.filter(q => 
+                        q.chapters && q.chapters.includes(chapter.id)
+                    ).length;
+                    
+                    return `
+                        <div class="chapter-card" data-chapter="${chapter.id}" onclick="toggleChapter('${chapter.id}', ${multiSelect})">
+                            <div class="chapter-icon">${chapter.icon}</div>
+                            <div class="chapter-name">${chapter.name}</div>
+                            <div class="chapter-count">${count}道题</div>
+                            <div class="chapter-checkbox">
+                                <i class="fas fa-check"></i>
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+            
+            <div class="chapter-footer">
+                <button class="btn btn-secondary" onclick="closeChapterModal()">
+                    <i class="fas fa-times"></i> 取消
+                </button>
+                <button class="btn btn-primary" onclick="confirmChapterSelection(${questionCount})">
+                    <i class="fas fa-check"></i> 开始答题
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // 动画显示
+    setTimeout(() => modal.classList.add('show'), 10);
+}
+
+// 选择/取消章节
+window.selectedChapters = new Set();
+window.toggleChapter = function(chapterId, multiSelect) {
+    const card = document.querySelector(`[data-chapter="${chapterId}"]`);
+    
+    if (multiSelect) {
+        // 多选模式
+        if (window.selectedChapters.has(chapterId)) {
+            window.selectedChapters.delete(chapterId);
+            card.classList.remove('selected');
+        } else {
+            window.selectedChapters.add(chapterId);
+            card.classList.add('selected');
+        }
+    } else {
+        // 单选模式
+        document.querySelectorAll('.chapter-card').forEach(c => c.classList.remove('selected'));
+        window.selectedChapters.clear();
+        window.selectedChapters.add(chapterId);
+        card.classList.add('selected');
+    }
+};
+
+// 确认章节选择并开始考试
+window.confirmChapterSelection = function(questionCount) {
+    if (window.selectedChapters.size === 0) {
+        alert('请至少选择一个章节！');
+        return;
+    }
+    
+    const selectedChapterIds = Array.from(window.selectedChapters);
+    
+    // 根据选择的章节过滤题目
+    const filteredQuestions = ChapterSystem.getQuestionsByChapters(
+        AppState.questions,
+        selectedChapterIds
+    );
+    
+    if (filteredQuestions.length < questionCount) {
+        alert(`所选章节的题目数量不足！\n当前有${filteredQuestions.length}道题，需要${questionCount}道题。\n请多选几个章节。`);
+        return;
+    }
+    
+    // 关闭章节选择
+    closeChapterModal();
+    
+    // 创建考试对象
+    AppState.currentExam = {
+        id: 'exam_' + Date.now(),
+        startTime: new Date(),
+        questions: getRandomQuestions(questionCount, filteredQuestions),
+        currentQuestionIndex: 0,
+        userAnswers: [],
+        score: 0,
+        totalQuestions: questionCount,
+        selectedChapters: selectedChapterIds
+    };
+    
+    // 保存考试状态
+    localStorage.setItem('currentExam', JSON.stringify(AppState.currentExam));
+    
+    // 跳转到考试页面
+    window.location.href = 'exam.html';
+    
+    console.log('开始考试:', AppState.currentExam);
+};
+
+// 关闭章节选择
+window.closeChapterModal = function() {
+    const modal = document.getElementById('chapterModal');
+    if (modal) {
+        modal.classList.remove('show');
+        setTimeout(() => modal.remove(), 300);
+    }
+    window.selectedChapters.clear();
+};
 
 // 显示学习报告
 function showLearningReport() {

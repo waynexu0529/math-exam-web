@@ -1,0 +1,221 @@
+/* 章节选择模态框 */
+.chapter-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.chapter-modal.show {
+    opacity: 1;
+}
+
+.chapter-modal-content {
+    background: white;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: modalSlideUp 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes modalSlideUp {
+    from {
+        transform: translateY(100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.chapter-modal-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
+    border-radius: 20px 20px 0 0;
+    position: relative;
+}
+
+.chapter-modal-header h2 {
+    margin: 0 0 10px 0;
+    font-size: 2em;
+}
+
+.chapter-subtitle {
+    margin: 0;
+    opacity: 0.95;
+    font-size: 1.1em;
+}
+
+.chapter-close {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    font-size: 2.5em;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s;
+    line-height: 1;
+}
+
+.chapter-close:hover {
+    transform: rotate(90deg) scale(1.2);
+}
+
+/* 章节网格 */
+.chapter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 30px;
+}
+
+.chapter-card {
+    background: #f5f5f5;
+    border-radius: 15px;
+    padding: 25px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    border: 3px solid transparent;
+}
+
+.chapter-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    background: #e8f4fd;
+}
+
+.chapter-card.selected {
+    background: linear-gradient(135deg, #e8f4fd 0%, #d4ebf7 100%);
+    border-color: #667eea;
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.chapter-card.selected .chapter-checkbox {
+    display: flex;
+}
+
+.chapter-icon {
+    font-size: 3.5em;
+    margin-bottom: 15px;
+}
+
+.chapter-name {
+    font-size: 1.05em;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.chapter-count {
+    font-size: 0.9em;
+    color: #666;
+    background: white;
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 15px;
+}
+
+.chapter-checkbox {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    background: #667eea;
+    border-radius: 50%;
+    color: white;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2em;
+    animation: checkPop 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes checkPop {
+    0% {
+        transform: scale(0);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* 章节底部按钮 */
+.chapter-footer {
+    padding: 25px 30px;
+    border-top: 2px solid #f0f0f0;
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+}
+
+.chapter-footer .btn {
+    min-width: 120px;
+    padding: 12px 25px;
+    font-size: 1.05em;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .chapter-modal-content {
+        width: 95%;
+        max-height: 95vh;
+    }
+    
+    .chapter-modal-header {
+        padding: 20px;
+    }
+    
+    .chapter-modal-header h2 {
+        font-size: 1.5em;
+    }
+    
+    .chapter-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+        padding: 20px;
+    }
+    
+    .chapter-card {
+        padding: 20px 15px;
+    }
+    
+    .chapter-icon {
+        font-size: 2.5em;
+    }
+    
+    .chapter-name {
+        font-size: 0.95em;
+    }
+    
+    .chapter-footer {
+        flex-direction: column;
+        padding: 20px;
+    }
+    
+    .chapter-footer .btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .chapter-grid {
+        grid-template-columns: 1fr;
+    }
+}
