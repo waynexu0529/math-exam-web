@@ -1,4 +1,4 @@
-// 数学小博士 - 学习报告模块
+// 七喜数学辅导课 - 学习报告模块
 document.addEventListener('DOMContentLoaded', function() {
     // 初始化报告
     initReport();

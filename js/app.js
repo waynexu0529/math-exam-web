@@ -1,4 +1,4 @@
-// 数学小博士 - 网页版主逻辑
+// 七喜数学辅导课 - 网页版主逻辑
 document.addEventListener('DOMContentLoaded', function() {
     // 初始化应用
     initApp();

@@ -1,4 +1,4 @@
-// 数学小博士 - 考试功能模块
+// 七喜数学辅导课 - 考试功能模块
 document.addEventListener('DOMContentLoaded', function() {
     // 初始化考试
     initExam();

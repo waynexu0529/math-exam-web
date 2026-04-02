@@ -1,4 +1,4 @@
-// 数学小博士 - 工具函数模块
+// 七喜数学辅导课 - 工具函数模块
 
 // 格式化时间
 function formatTime(seconds) {

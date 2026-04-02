@@ -1,4 +1,4 @@
-// 数学小博士 - 汽车闯关游戏系统
+// 七喜数学辅导课 - 汽车闯关游戏系统
 document.addEventListener('DOMContentLoaded', function() {
     // 初始化游戏
     initGame();
