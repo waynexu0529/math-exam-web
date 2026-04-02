@@ -48,6 +48,9 @@ function initExam() {
     // 加载考试数据
     loadExamData();
     
+    // 🚗 初始化零件系统
+    PartsSystem.init(ExamState.currentExam.totalQuestions);
+    
     // 绑定事件
     bindExamEvents();
     
@@ -61,6 +64,7 @@ function initExam() {
     updateProgress();
     
     console.log('考试初始化完成');
+    console.log('🚗 零件系统已启动，准备收集零件！');
 }
 
 // 加载考试数据
@@ -422,8 +426,15 @@ function selectOption(optionId) {
     updateOptionSelection(optionId);
     updateProgress();
     
+    // 检查答案是否正确
+    const isCorrect = optionId === question.correctAnswer;
+    
+    // 🚗 收集零件
+    PartsSystem.collectPart(questionIndex, isCorrect);
+    showPartCollectionFeedback(questionIndex, isCorrect);
+    
     // 趣味反馈：检查答案是否正确并显示鼓励
-    if (optionId === question.correctAnswer) {
+    if (isCorrect) {
         ExamState.correctStreak++;
         ExamState.totalCorrect++;
         showEncouragement();
@@ -438,6 +449,29 @@ function selectOption(optionId) {
     
     // 添加选择动画
     addSelectionAnimation(optionId);
+}
+
+// 🚗 显示零件收集反馈
+function showPartCollectionFeedback(questionIndex, isCorrect) {
+    const part = PartsSystem.currentParts[questionIndex];
+    if (!part) return;
+    
+    const feedback = document.createElement('div');
+    feedback.className = `part-collection-toast ${isCorrect ? 'part-good' : 'part-damaged'}`;
+    feedback.innerHTML = `
+        <div class="part-icon">${part.icon}</div>
+        <div class="part-info">
+            <div class="part-name">${part.name}</div>
+            <div class="part-status">${isCorrect ? '✅ 完好零件' : '⚠️ 受损零件'}</div>
+        </div>
+    `;
+    document.body.appendChild(feedback);
+    
+    setTimeout(() => feedback.classList.add('show'), 10);
+    setTimeout(() => {
+        feedback.classList.remove('show');
+        setTimeout(() => feedback.remove(), 300);
+    }, 2500);
 }
 
 // 更新选项选择状态
@@ -670,6 +704,7 @@ function showExamResult(score) {
     const correctCount = Math.floor(parseFloat(score) / 100 * ExamState.currentExam.totalQuestions);
     const wrongCount = ExamState.currentExam.totalQuestions - correctCount;
     const achievement = showAchievementBadge(parseFloat(score));
+    const progress = PartsSystem.getProgress();
     
     const resultHTML = `
         <div class="exam-result">
@@ -688,6 +723,28 @@ function showExamResult(score) {
                     <span class="score-label">分</span>
                 </div>
                 <p class="score-description">总分100分</p>
+            </div>
+            
+            <!-- 🚗 零件收集进度 -->
+            <div class="parts-collection-summary">
+                <h3><i class="fas fa-wrench"></i> 零件收集情况</h3>
+                <div class="parts-stats">
+                    <div class="stat-item">
+                        <span class="stat-icon">🔧</span>
+                        <span class="stat-value">${progress.collected}/${progress.total}</span>
+                        <span class="stat-label">已收集</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-icon">✅</span>
+                        <span class="stat-value">${progress.good}</span>
+                        <span class="stat-label">完好</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-icon">⚠️</span>
+                        <span class="stat-value">${progress.damaged}</span>
+                        <span class="stat-label">受损</span>
+                    </div>
+                </div>
             </div>
             
             <div class="result-details">
@@ -709,14 +766,14 @@ function showExamResult(score) {
             </div>
             
             <div class="result-actions">
-                <button class="btn btn-primary" onclick="reviewExam()">
+                <button class="btn btn-primary btn-large" onclick="showCarGarage()">
+                    <i class="fas fa-car"></i> 进入汽车工厂
+                </button>
+                <button class="btn btn-secondary" onclick="reviewExam()">
                     <i class="fas fa-search"></i> 查看答案解析
                 </button>
-                <button class="btn btn-secondary" onclick="goToHome()">
+                <button class="btn btn-info" onclick="goToHome()">
                     <i class="fas fa-home"></i> 返回首页
-                </button>
-                <button class="btn btn-info" onclick="goToReport()">
-                    <i class="fas fa-chart-bar"></i> 查看学习报告
                 </button>
             </div>
         </div>
@@ -968,9 +1025,182 @@ function showAchievementBadge(score) {
     return { badge, message, color };
 }
 
+// 🚗 显示汽车工厂
+function showCarGarage() {
+    const container = document.getElementById('questionContainer');
+    const progress = PartsSystem.getProgress();
+    const currentCar = GarageSystem.allCars.find(c => c.id === GarageSystem.selectedCar);
+    
+    let garageHTML = `
+        <div class="car-garage">
+            <div class="garage-header">
+                <h2><i class="fas fa-warehouse"></i> 汽车工厂</h2>
+                <p class="garage-subtitle">组装你的爱车！</p>
+            </div>
+            
+            <div class="current-car-display">
+                <div class="car-model">
+                    <div class="car-body">
+                        <div class="car-icon">${currentCar.icon}</div>
+                        <div class="car-name">${currentCar.name}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="parts-grid">
+    `;
+    
+    // 显示所有零件
+    PartsSystem.currentParts.forEach((part, index) => {
+        const statusClass = part.status === 'good' ? 'part-good' : 
+                          part.status === 'damaged' ? 'part-damaged' : 'part-missing';
+        const statusText = part.status === 'good' ? '完好' : 
+                          part.status === 'damaged' ? '受损' : '缺失';
+        const statusIcon = part.status === 'good' ? '✅' : 
+                          part.status === 'damaged' ? '⚠️' : '❌';
+        
+        garageHTML += `
+            <div class="part-card ${statusClass}">
+                <div class="part-visual">
+                    <span class="part-big-icon">${part.icon}</span>
+                    <span class="part-status-badge">${statusIcon}</span>
+                </div>
+                <div class="part-details">
+                    <div class="part-name">${part.name}</div>
+                    <div class="part-status-text">${statusText}</div>
+                    <div class="part-number">零件 #${part.partId}</div>
+                </div>
+            </div>
+        `;
+    });
+    
+    garageHTML += `
+            </div>
+            
+            <div class="garage-summary">
+                <h3>收集完成度</h3>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: ${(progress.collected / progress.total) * 100}%"></div>
+                </div>
+                <div class="progress-text">${progress.collected} / ${progress.total} 零件</div>
+            </div>
+            
+            <div class="garage-actions">
+                ${progress.collected === progress.total ? `
+                    <button class="btn btn-success btn-large" onclick="startCrashTest()">
+                        <i class="fas fa-shield-alt"></i> 开始碰撞测试
+                    </button>
+                ` : `
+                    <div class="warning-message">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        还有 ${progress.total - progress.collected} 个零件未收集，无法进行测试
+                    </div>
+                `}
+                <button class="btn btn-primary" onclick="reviewExam()">
+                    <i class="fas fa-search"></i> 查看答案解析
+                </button>
+                <button class="btn btn-secondary" onclick="goToHome()">
+                    <i class="fas fa-home"></i> 返回首页
+                </button>
+            </div>
+        </div>
+    `;
+    
+    container.innerHTML = garageHTML;
+}
+
+// 🚗 开始碰撞测试
+function startCrashTest() {
+    const report = CrashTestSystem.generateReport();
+    const container = document.getElementById('questionContainer');
+    
+    let crashHTML = `
+        <div class="crash-test-container">
+            <div class="crash-header">
+                <h2><i class="fas fa-car-crash"></i> 碰撞测试中...</h2>
+                <p class="crash-subtitle">检测车辆安全性能</p>
+            </div>
+            
+            <div class="crash-animation">
+                <div class="car-crash-scene">
+                    <div class="test-car ${report.canDrive ? 'car-intact' : 'car-damaged'}">
+                        🚗
+                    </div>
+                    <div class="crash-wall">🧱</div>
+                </div>
+            </div>
+            
+            <div class="crash-result">
+                <div class="rating-display" style="background: ${report.rating.color}">
+                    <div class="rating-grade">${report.rating.grade}</div>
+                    <div class="rating-stars">
+                        ${'⭐'.repeat(report.rating.stars)}${'☆'.repeat(5 - report.rating.stars)}
+                    </div>
+                    <div class="rating-title">${report.rating.title}</div>
+                </div>
+                
+                <div class="crash-details">
+                    <h3>测试报告</h3>
+                    <div class="test-stats">
+                        <div class="test-stat">
+                            <span class="stat-label">完好零件:</span>
+                            <span class="stat-value">${report.progress.good} / ${report.progress.total}</span>
+                        </div>
+                        <div class="test-stat">
+                            <span class="stat-label">受损零件:</span>
+                            <span class="stat-value">${report.progress.damaged}</span>
+                        </div>
+                        <div class="test-stat">
+                            <span class="stat-label">车辆状态:</span>
+                            <span class="stat-value ${report.canDrive ? 'status-good' : 'status-bad'}">
+                                ${report.canDrive ? '✅ 可以上路' : '❌ 需要维修'}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    ${report.damagedParts.length > 0 ? `
+                        <div class="damaged-parts-list">
+                            <h4>需要修复的零件：</h4>
+                            <ul>
+                                ${report.damagedParts.map(part => `
+                                    <li>${part.icon} ${part.name} - 对应题目 #${part.questionIndex + 1}</li>
+                                `).join('')}
+                            </ul>
+                            <p class="repair-hint">💡 提示：查看答案解析并重做错题即可修复零件</p>
+                        </div>
+                    ` : `
+                        <div class="perfect-message">
+                            <i class="fas fa-trophy"></i>
+                            <p>恭喜！您的车辆完美通过所有测试！</p>
+                        </div>
+                    `}
+                </div>
+            </div>
+            
+            <div class="crash-actions">
+                <button class="btn btn-primary" onclick="reviewExam()">
+                    <i class="fas fa-tools"></i> 修复零件（查看解析）
+                </button>
+                <button class="btn btn-secondary" onclick="goToHome()">
+                    <i class="fas fa-home"></i> 返回首页
+                </button>
+            </div>
+        </div>
+    `;
+    
+    container.innerHTML = crashHTML;
+    
+    // 播放碰撞动画
+    setTimeout(() => {
+        document.querySelector('.test-car').classList.add('crash-animation-active');
+    }, 500);
+}
+
 // 导出到全局
 window.selectOption = selectOption;
 window.goToQuestion = goToQuestion;
 window.reviewExam = reviewExam;
 window.goToHome = goToHome;
 window.goToReport = goToReport;
+window.showCarGarage = showCarGarage;
+window.startCrashTest = startCrashTest;
