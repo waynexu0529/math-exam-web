@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的错题本 - 数学小博士</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/wrong-questions.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="header-content">
+            <h1><i class="fas fa-book-medical"></i> 我的错题本</h1>
+            <button class="btn btn-outline" onclick="goToHome()">
+                <i class="fas fa-home"></i> 返回首页
+            </button>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <main class="main-content">
+        <div class="container">
+            <!-- 错题统计 -->
+            <section class="wrong-stats" id="wrongStats">
+                <div class="stat-card">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="totalWrong">0</div>
+                        <div class="stat-label">累计错题</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">❌</div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="unresolvedWrong">0</div>
+                        <div class="stat-label">待复习</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="resolvedWrong">0</div>
+                        <div class="stat-label">已掌握</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="masteryRate">0%</div>
+                        <div class="stat-label">掌握率</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 筛选和操作 -->
+            <section class="wrong-filters">
+                <div class="filter-group">
+                    <label>
+                        <i class="fas fa-filter"></i> 筛选：
+                    </label>
+                    <select id="statusFilter" onchange="filterWrongQuestions()">
+                        <option value="all">全部错题</option>
+                        <option value="unresolved">待复习</option>
+                        <option value="resolved">已掌握</option>
+                    </select>
+                    
+                    <select id="chapterFilter" onchange="filterWrongQuestions()">
+                        <option value="all">全部章节</option>
+                    </select>
+                </div>
+                
+                <div class="action-group">
+                    <button class="btn btn-primary" onclick="practiceWrongQuestions()" id="practiceBtn">
+                        <i class="fas fa-pencil-alt"></i> 开始错题练习
+                    </button>
+                    <button class="btn btn-danger btn-outline" onclick="clearWrongQuestions()">
+                        <i class="fas fa-trash"></i> 清空错题本
+                    </button>
+                </div>
+            </section>
+
+            <!-- 错题列表 -->
+            <section class="wrong-list" id="wrongList">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>正在加载错题...</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>© 2026 数学小博士 - 三年级数学考试系统</p>
+            <p>错题本帮你巩固薄弱知识点</p>
+        </div>
+    </footer>
+
+    <script src="js/utils.js"></script>
+    <script src="js/knowledge-points-map.js"></script>
+    <script src="js/chapter-system.js"></script>
+    <script src="js/wrong-questions.js"></script>
+</body>
+</html>

@@ -839,8 +839,8 @@ function showWrongQuestions() {
         return;
     }
     
-    // 跳转到报告页面
-    window.location.href = 'report.html?tab=wrong';
+    // 跳转到错题本页面
+    window.location.href = 'wrong-questions.html';
 }
 
 // 更新UI
