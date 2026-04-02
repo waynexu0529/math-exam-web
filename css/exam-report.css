@@ -665,3 +665,40 @@
         width: 100%;
     }
 }
+/* 零件收集提示 */
+.parts-hint {
+    margin-top: 15px;
+    padding: 12px 15px;
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    border-left: 4px solid #ffc107;
+    border-radius: 8px;
+    font-size: 0.95em;
+    color: #856404;
+    line-height: 1.6;
+}
+
+.parts-hint i {
+    color: #ffc107;
+    margin-right: 5px;
+}
+
+.parts-hint strong {
+    color: #ff6b6b;
+    font-weight: bold;
+}
+
+/* 零件统计项强调 */
+.stat-item.good-parts .stat-value {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.stat-item.damaged-parts .stat-value {
+    color: #ffc107;
+    font-weight: bold;
+}
+
+/* 未答题目标记 */
+.detail-card p:has(.unanswered-icon) {
+    color: #6c757d;
+}

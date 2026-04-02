@@ -628,11 +628,21 @@ function submitExam() {
     if (ExamState.isSubmitted) return;
     
     // 检查是否有未答题目
-    const unansweredCount = ExamState.userAnswers.filter(answer => answer === null).length;
+    const unansweredCount = ExamState.userAnswers.filter((answer, idx) => 
+        answer === null || answer === undefined
+    ).length;
     
     if (unansweredCount > 0) {
-        if (!confirm(`您还有 ${unansweredCount} 道题目未答，确定要交卷吗？`)) {
+        if (!confirm(`您还有 ${unansweredCount} 道题目未答，这些题目将被视为答错（获得受损零件）。\n确定要交卷吗？`)) {
             return;
+        }
+        
+        // 🚗 为所有未作答题目分配受损零件
+        for (let i = 0; i < ExamState.currentExam.totalQuestions; i++) {
+            if (!ExamState.userAnswers[i]) {
+                // 未作答的题目视为答错
+                PartsSystem.collectPart(i, false);
+            }
         }
     }
     
@@ -753,6 +763,9 @@ function saveWrongQuestions() {
 function showExamResult(score) {
     const correctCount = Math.floor(parseFloat(score) / 100 * ExamState.currentExam.totalQuestions);
     const wrongCount = ExamState.currentExam.totalQuestions - correctCount;
+    const unansweredCount = ExamState.userAnswers.filter((answer, idx) => 
+        !answer && idx < ExamState.currentExam.totalQuestions
+    ).length;
     const achievement = showAchievementBadge(parseFloat(score));
     const progress = PartsSystem.getProgress();
     
@@ -784,17 +797,23 @@ function showExamResult(score) {
                         <span class="stat-value">${progress.collected}/${progress.total}</span>
                         <span class="stat-label">已收集</span>
                     </div>
-                    <div class="stat-item">
+                    <div class="stat-item good-parts">
                         <span class="stat-icon">✅</span>
                         <span class="stat-value">${progress.good}</span>
                         <span class="stat-label">完好</span>
                     </div>
-                    <div class="stat-item">
+                    <div class="stat-item damaged-parts">
                         <span class="stat-icon">⚠️</span>
                         <span class="stat-value">${progress.damaged}</span>
                         <span class="stat-label">受损</span>
                     </div>
                 </div>
+                ${progress.damaged > 0 ? `
+                    <p class="parts-hint">
+                        <i class="fas fa-info-circle"></i> 
+                        答错或未作答的题目会获得<strong>受损零件</strong>，完好零件需要全部答对才能获得！
+                    </p>
+                ` : ''}
             </div>
             
             <div class="result-details">
@@ -802,7 +821,8 @@ function showExamResult(score) {
                     <h4><i class="fas fa-clipboard-check"></i> 答题情况</h4>
                     <p>📝 总题数: ${ExamState.currentExam.totalQuestions}</p>
                     <p>✅ 答对: ${correctCount} 题</p>
-                    <p>❌ 答错: ${wrongCount} 题</p>
+                    <p>❌ 答错: ${wrongCount - unansweredCount} 题</p>
+                    ${unansweredCount > 0 ? `<p>⚪ 未答: ${unansweredCount} 题</p>` : ''}
                     <p>📊 正确率: ${score}%</p>
                     ${ExamState.correctStreak > 0 ? `<p>🔥 最高连击: ${ExamState.correctStreak}</p>` : ''}
                 </div>
