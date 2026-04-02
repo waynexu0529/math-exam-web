@@ -56,14 +56,22 @@ function loadExamData() {
     // 从本地存储加载考试数据，如果没有则创建新考试
     const savedExam = localStorage.getItem('currentExam');
     
+    console.log('=== loadExamData 调试信息 ===');
+    console.log('localStorage中的currentExam:', savedExam);
+    
     if (savedExam) {
         ExamState.currentExam = JSON.parse(savedExam);
+        console.log('✅ 从localStorage加载考试数据:', ExamState.currentExam);
         ExamState.userAnswers = ExamState.currentExam.userAnswers || [];
         ExamState.currentQuestionIndex = ExamState.currentExam.currentQuestionIndex || 0;
     } else {
+        console.log('⚠️ localStorage中无考试数据，创建新考试');
         // 创建新考试（10道题）
         createNewExam(10);
     }
+    
+    console.log('最终的ExamState.currentExam:', ExamState.currentExam);
+    console.log('题目数量:', ExamState.currentExam ? ExamState.currentExam.questions?.length : 0);
     
     // 更新考试信息显示
     document.getElementById('examProgress').textContent = 
@@ -310,8 +318,27 @@ function updateTimerDisplay() {
 
 // 加载题目
 function loadQuestion(questionIndex) {
-    if (!ExamState.currentExam || !ExamState.currentExam.questions[questionIndex]) {
-        console.error('题目加载失败');
+    console.log('=== loadQuestion 调试信息 ===');
+    console.log('questionIndex:', questionIndex);
+    console.log('ExamState.currentExam:', ExamState.currentExam);
+    console.log('questions数组:', ExamState.currentExam ? ExamState.currentExam.questions : null);
+    console.log('questions长度:', ExamState.currentExam && ExamState.currentExam.questions ? ExamState.currentExam.questions.length : 0);
+    
+    if (!ExamState.currentExam) {
+        console.error('❌ ExamState.currentExam 未初始化');
+        alert('考试数据未加载，请返回首页重新开始');
+        return;
+    }
+    
+    if (!ExamState.currentExam.questions) {
+        console.error('❌ ExamState.currentExam.questions 不存在');
+        alert('题目数据缺失，请返回首页重新开始');
+        return;
+    }
+    
+    if (!ExamState.currentExam.questions[questionIndex]) {
+        console.error(`❌ 题目索引 ${questionIndex} 越界（总共 ${ExamState.currentExam.questions.length} 题）`);
+        alert(`题目加载失败：索引${questionIndex}超出范围`);
         return;
     }
     
