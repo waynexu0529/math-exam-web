@@ -142,12 +142,23 @@ function handleLogin(e) {
     e.preventDefault();
     
     const nameInput = document.getElementById('studentName');
-    const gradeInput = document.getElementById('studentGrade');
+    const gradeInput = document.getElementById('grade');
     
-    if (!nameInput || !gradeInput) return;
+    console.log('=== 登录调试信息 ===');
+    console.log('nameInput:', nameInput);
+    console.log('gradeInput:', gradeInput);
+    
+    if (!nameInput || !gradeInput) {
+        console.error('❌ 表单元素未找到');
+        alert('表单加载失败，请刷新页面重试');
+        return;
+    }
     
     const name = nameInput.value.trim();
     const grade = gradeInput.value;
+    
+    console.log('姓名:', name);
+    console.log('年级:', grade);
     
     if (!name || !grade) {
         alert('请填写姓名和选择年级！');
@@ -158,6 +169,8 @@ function handleLogin(e) {
     AppState.currentUser = { name, grade };
     AppState.isLoggedIn = true;
     localStorage.setItem('mathExamUser', JSON.stringify(AppState.currentUser));
+    
+    console.log('✅ 用户信息已保存:', AppState.currentUser);
     
     // 更新UI
     updateUI();
