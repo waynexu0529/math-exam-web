@@ -486,18 +486,22 @@ function submitAnswer() {
     // 更新进度
     updateProgress();
     
-    // 自动跳转到下一题
-    setTimeout(() => {
-        if (questionIndex < ExamState.currentExam.totalQuestions - 1) {
-            // 还有下一题，跳转
+    // 判断是否为最后一题
+    const isLastQuestion = questionIndex === ExamState.currentExam.totalQuestions - 1;
+    
+    if (!isLastQuestion) {
+        // 不是最后一题，1.5秒后自动跳转到下一题
+        setTimeout(() => {
             goToNextQuestion();
-        } else {
-            // 最后一题，自动交卷
-            if (confirm('这是最后一题了！是否提交考卷？')) {
+        }, 1500);
+    } else {
+        // 是最后一题，显示完成提示，不自动交卷
+        setTimeout(() => {
+            if (confirm('恭喜！这是最后一题了！\n\n所有题目已答完，是否现在提交考卷？')) {
                 submitExam();
             }
-        }
-    }, 1500); // 1.5秒后自动跳转
+        }, 1500);
+    }
 }
 
 // 🚗 显示零件收集反馈
@@ -627,23 +631,38 @@ function goToQuestion(questionIndex) {
 function submitExam() {
     if (ExamState.isSubmitted) return;
     
-    // 检查是否有未答题目
+    console.log('=== 提交考试 ===');
+    console.log('当前答案:', ExamState.userAnswers);
+    console.log('总题数:', ExamState.currentExam.totalQuestions);
+    
+    // 🚗 重要：先为所有题目分配零件（包括未作答的）
+    for (let i = 0; i < ExamState.currentExam.totalQuestions; i++) {
+        const hasAnswer = ExamState.userAnswers[i] !== null && ExamState.userAnswers[i] !== undefined;
+        
+        if (!hasAnswer) {
+            // 未作答的题目 → 受损零件
+            PartsSystem.collectPart(i, false);
+            console.log(`题目 ${i}: 未作答 → 受损零件`);
+        } else {
+            // 已作答的题目，检查是否已经收集过零件
+            const question = ExamState.currentExam.questions[i];
+            const isCorrect = ExamState.userAnswers[i] === question.correctAnswer;
+            
+            // 确保零件已被正确收集（防止跳题导致未收集）
+            if (PartsSystem.currentParts[i] && PartsSystem.currentParts[i].status === 'missing') {
+                PartsSystem.collectPart(i, isCorrect);
+                console.log(`题目 ${i}: 补充收集 → ${isCorrect ? '完好' : '受损'}零件`);
+            }
+        }
+    }
+    
+    // 检查是否有未答题目（用于提示）
     const unansweredCount = ExamState.userAnswers.filter((answer, idx) => 
         answer === null || answer === undefined
     ).length;
     
     if (unansweredCount > 0) {
-        if (!confirm(`您还有 ${unansweredCount} 道题目未答，这些题目将被视为答错（获得受损零件）。\n确定要交卷吗？`)) {
-            return;
-        }
-        
-        // 🚗 为所有未作答题目分配受损零件
-        for (let i = 0; i < ExamState.currentExam.totalQuestions; i++) {
-            if (!ExamState.userAnswers[i]) {
-                // 未作答的题目视为答错
-                PartsSystem.collectPart(i, false);
-            }
-        }
+        console.log(`检测到 ${unansweredCount} 道未答题目`);
     }
     
     // 停止计时器
@@ -1101,6 +1120,10 @@ function showCarGarage() {
     const progress = PartsSystem.getProgress();
     const currentCar = GarageSystem.allCars.find(c => c.id === GarageSystem.selectedCar);
     
+    console.log('=== 汽车工厂 ===');
+    console.log('零件进度:', progress);
+    console.log('当前零件列表:', PartsSystem.currentParts);
+    
     let garageHTML = `
         <div class="car-garage">
             <div class="garage-header">
@@ -1120,29 +1143,36 @@ function showCarGarage() {
             <div class="parts-grid">
     `;
     
-    // 显示所有零件
-    PartsSystem.currentParts.forEach((part, index) => {
-        const statusClass = part.status === 'good' ? 'part-good' : 
-                          part.status === 'damaged' ? 'part-damaged' : 'part-missing';
-        const statusText = part.status === 'good' ? '完好' : 
-                          part.status === 'damaged' ? '受损' : '缺失';
-        const statusIcon = part.status === 'good' ? '✅' : 
-                          part.status === 'damaged' ? '⚠️' : '❌';
-        
-        garageHTML += `
-            <div class="part-card ${statusClass}">
-                <div class="part-visual">
-                    <span class="part-big-icon">${part.icon}</span>
-                    <span class="part-status-badge">${statusIcon}</span>
+    // 显示所有零件（确保显示全部）
+    if (PartsSystem.currentParts.length === 0) {
+        console.error('❌ 零件列表为空！');
+        garageHTML += `<p style="color: red; padding: 20px;">零件数据异常，请返回首页重新开始</p>`;
+    } else {
+        PartsSystem.currentParts.forEach((part, index) => {
+            const statusClass = part.status === 'good' ? 'part-good' : 
+                              part.status === 'damaged' ? 'part-damaged' : 'part-missing';
+            const statusText = part.status === 'good' ? '完好' : 
+                              part.status === 'damaged' ? '受损' : '缺失';
+            const statusIcon = part.status === 'good' ? '✅' : 
+                              part.status === 'damaged' ? '⚠️' : '❌';
+            
+            console.log(`零件 ${index}: ${part.name} - ${part.status}`);
+            
+            garageHTML += `
+                <div class="part-card ${statusClass}">
+                    <div class="part-visual">
+                        <span class="part-big-icon">${part.icon}</span>
+                        <span class="part-status-badge">${statusIcon}</span>
+                    </div>
+                    <div class="part-details">
+                        <div class="part-name">${part.name}</div>
+                        <div class="part-status-text">${statusText}</div>
+                        <div class="part-number">零件 #${part.partId}</div>
+                    </div>
                 </div>
-                <div class="part-details">
-                    <div class="part-name">${part.name}</div>
-                    <div class="part-status-text">${statusText}</div>
-                    <div class="part-number">零件 #${part.partId}</div>
-                </div>
-            </div>
-        `;
-    });
+            `;
+        });
+    }
     
     garageHTML += `
             </div>
@@ -1156,14 +1186,25 @@ function showCarGarage() {
             </div>
             
             <div class="garage-actions">
-                ${progress.collected === progress.total ? `
+                ${progress.collected >= progress.total ? `
                     <button class="btn btn-success btn-large" onclick="startCrashTest()">
                         <i class="fas fa-shield-alt"></i> 开始碰撞测试
                     </button>
+                    ${progress.damaged > 0 ? `
+                        <p class="crash-hint">
+                            <i class="fas fa-info-circle"></i> 
+                            你有 <strong>${progress.damaged}</strong> 个受损零件，可能影响碰撞测试评级
+                        </p>
+                    ` : `
+                        <p class="crash-hint success">
+                            <i class="fas fa-trophy"></i> 
+                            所有零件完好！可以获得最高评级！
+                        </p>
+                    `}
                 ` : `
                     <div class="warning-message">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        还有 ${progress.total - progress.collected} 个零件未收集，无法进行测试
+                        <i class="fas fa-bug"></i>
+                        零件收集异常（${progress.collected}/${progress.total}），请联系管理员
                     </div>
                 `}
                 <button class="btn btn-primary" onclick="reviewExam()">

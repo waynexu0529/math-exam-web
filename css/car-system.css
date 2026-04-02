@@ -780,3 +780,30 @@
         min-width: 180px;
     }
 }
+
+/* 碰撞测试提示 */
+.crash-hint {
+    margin-top: 15px;
+    padding: 12px 20px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    border-left: 4px solid #ffc107;
+    color: #856404;
+    font-size: 1em;
+    text-align: center;
+}
+
+.crash-hint.success {
+    background: linear-gradient(135deg, #d4edda 0%, #b7f0c1 100%);
+    border-left-color: #28a745;
+    color: #155724;
+}
+
+.crash-hint strong {
+    color: #ff6b6b;
+    font-size: 1.1em;
+}
+
+.crash-hint i {
+    margin-right: 8px;
+}
