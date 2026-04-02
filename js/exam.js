@@ -961,7 +961,7 @@ function reviewExam() {
                         <div class="review-tags">
                             <strong>知识点：</strong>
                             ${question.knowledgePoints.map(point => 
-                                `<span class="knowledge-tag">${point}</span>`
+                                `<span class="knowledge-tag">${translateKnowledgePoint(point)}</span>`
                             ).join('')}
                         </div>
                     ` : ''}
