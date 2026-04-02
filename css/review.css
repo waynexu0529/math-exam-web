@@ -1,0 +1,287 @@
+/* 答案解析页面样式 */
+
+.review-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.review-header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding: 30px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 15px;
+}
+
+.review-header h2 {
+    margin: 0 0 10px 0;
+    font-size: 2em;
+}
+
+.review-subtitle {
+    margin: 0;
+    font-size: 1.1em;
+    opacity: 0.95;
+}
+
+.review-item {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s;
+}
+
+.review-item:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+}
+
+.review-item.correct {
+    border-left: 4px solid #52c41a;
+}
+
+.review-item.incorrect {
+    border-left: 4px solid #f5222d;
+}
+
+.review-question-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.question-number {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #333;
+}
+
+.review-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 500;
+    font-size: 0.95em;
+}
+
+.status-correct {
+    background: #f6ffed;
+    color: #52c41a;
+    border: 1px solid #b7eb8f;
+}
+
+.status-incorrect {
+    background: #fff1f0;
+    color: #f5222d;
+    border: 1px solid #ffa39e;
+}
+
+.review-question-content {
+    padding: 10px 0;
+}
+
+.question-text {
+    font-size: 1.15em;
+    color: #333;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.review-options {
+    margin: 20px 0;
+}
+
+.review-option {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    background: #fafafa;
+    border: 2px solid #e8e8e8;
+    transition: all 0.3s;
+}
+
+.review-option .option-letter {
+    font-weight: bold;
+    margin-right: 12px;
+    color: #666;
+    min-width: 30px;
+}
+
+.review-option .option-text {
+    flex: 1;
+    color: #333;
+}
+
+.review-option i {
+    font-size: 1.2em;
+    margin-left: 10px;
+}
+
+.option-correct {
+    background: #f6ffed;
+    border-color: #52c41a;
+}
+
+.option-correct .option-letter,
+.option-correct .option-text {
+    color: #52c41a;
+    font-weight: 600;
+}
+
+.option-correct i {
+    color: #52c41a;
+}
+
+.option-wrong {
+    background: #fff1f0;
+    border-color: #f5222d;
+}
+
+.option-wrong .option-letter,
+.option-wrong .option-text {
+    color: #f5222d;
+    font-weight: 600;
+}
+
+.option-wrong i {
+    color: #f5222d;
+}
+
+.review-answer-info {
+    background: #f5f5f5;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.answer-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 1.05em;
+}
+
+.answer-row:last-child {
+    margin-bottom: 0;
+}
+
+.answer-row strong {
+    color: #666;
+    min-width: 100px;
+}
+
+.text-correct {
+    color: #52c41a;
+    font-weight: 600;
+}
+
+.text-incorrect {
+    color: #f5222d;
+    font-weight: 600;
+}
+
+.review-explanation {
+    background: #e6f7ff;
+    border-left: 4px solid #1890ff;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.review-explanation h4 {
+    margin: 0 0 12px 0;
+    color: #1890ff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.1em;
+}
+
+.review-explanation p {
+    margin: 0;
+    color: #333;
+    line-height: 1.6;
+    font-size: 1.05em;
+}
+
+.review-tags {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #e8e8e8;
+}
+
+.review-tags strong {
+    color: #666;
+    font-size: 0.95em;
+}
+
+.knowledge-tag {
+    display: inline-block;
+    padding: 5px 12px;
+    background: #f0f0f0;
+    color: #666;
+    border-radius: 15px;
+    font-size: 0.9em;
+}
+
+.review-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 40px;
+    padding: 30px 0;
+}
+
+.review-actions .btn {
+    padding: 12px 30px;
+    font-size: 1.05em;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .review-container {
+        padding: 15px;
+    }
+    
+    .review-header {
+        padding: 20px;
+    }
+    
+    .review-header h2 {
+        font-size: 1.5em;
+    }
+    
+    .review-item {
+        padding: 20px 15px;
+    }
+    
+    .review-question-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .review-actions {
+        flex-direction: column;
+    }
+    
+    .review-actions .btn {
+        width: 100%;
+    }
+}

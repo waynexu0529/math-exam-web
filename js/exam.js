@@ -694,7 +694,114 @@ function showExamResult(score) {
 
 // 查看答案解析
 function reviewExam() {
-    alert('答案解析功能正在开发中...');
+    if (!ExamState.currentExam || !ExamState.isSubmitted) {
+        alert('请先完成考试！');
+        return;
+    }
+    
+    // 创建答案解析页面
+    const container = document.getElementById('questionContainer');
+    
+    let reviewHTML = `
+        <div class="review-container">
+            <div class="review-header">
+                <h2><i class="fas fa-check-circle"></i> 答案解析</h2>
+                <p class="review-subtitle">查看每道题的详细解答</p>
+            </div>
+    `;
+    
+    // 遍历所有题目
+    ExamState.currentExam.questions.forEach((question, index) => {
+        const userAnswer = ExamState.userAnswers[index];
+        const isCorrect = userAnswer === question.correctAnswer;
+        
+        reviewHTML += `
+            <div class="review-item ${isCorrect ? 'correct' : 'incorrect'}">
+                <div class="review-question-header">
+                    <span class="question-number">第 ${index + 1} 题</span>
+                    <span class="review-status ${isCorrect ? 'status-correct' : 'status-incorrect'}">
+                        <i class="fas fa-${isCorrect ? 'check' : 'times'}-circle"></i>
+                        ${isCorrect ? '回答正确' : '回答错误'}
+                    </span>
+                </div>
+                
+                <div class="review-question-content">
+                    <p class="question-text">${question.content}</p>
+                    
+                    <div class="review-options">
+                        ${question.options.map(option => {
+                            let optionClass = 'review-option';
+                            if (option.id === question.correctAnswer) {
+                                optionClass += ' option-correct';
+                            }
+                            if (option.id === userAnswer && userAnswer !== question.correctAnswer) {
+                                optionClass += ' option-wrong';
+                            }
+                            
+                            return `
+                                <div class="${optionClass}">
+                                    <span class="option-letter">${option.id}.</span>
+                                    <span class="option-text">${option.text}</span>
+                                    ${option.id === question.correctAnswer ? '<i class="fas fa-check"></i>' : ''}
+                                    ${option.id === userAnswer && userAnswer !== question.correctAnswer ? '<i class="fas fa-times"></i>' : ''}
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    
+                    <div class="review-answer-info">
+                        <div class="answer-row">
+                            <strong>你的答案：</strong>
+                            <span class="${isCorrect ? 'text-correct' : 'text-incorrect'}">
+                                ${userAnswer || '未作答'}
+                            </span>
+                        </div>
+                        <div class="answer-row">
+                            <strong>正确答案：</strong>
+                            <span class="text-correct">${question.correctAnswer}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="review-explanation">
+                        <h4><i class="fas fa-lightbulb"></i> 解析</h4>
+                        <p>${question.explanation}</p>
+                    </div>
+                    
+                    ${question.knowledgePoints && question.knowledgePoints.length > 0 ? `
+                        <div class="review-tags">
+                            <strong>知识点：</strong>
+                            ${question.knowledgePoints.map(point => 
+                                `<span class="knowledge-tag">${point}</span>`
+                            ).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+    });
+    
+    reviewHTML += `
+            <div class="review-actions">
+                <button class="btn btn-primary" onclick="goToHome()">
+                    <i class="fas fa-home"></i> 返回首页
+                </button>
+                <button class="btn btn-info" onclick="goToReport()">
+                    <i class="fas fa-chart-bar"></i> 查看学习报告
+                </button>
+            </div>
+        </div>
+    `;
+    
+    container.innerHTML = reviewHTML;
+    
+    // 隐藏考试控制栏（如果还在显示）
+    const controls = document.querySelector('.exam-controls');
+    if (controls) {
+        controls.style.display = 'none';
+    }
+    
+    // 滚动到顶部
+    window.scrollTo(0, 0);
 }
 
 // 返回首页
