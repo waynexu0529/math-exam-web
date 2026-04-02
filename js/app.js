@@ -197,7 +197,8 @@ function startExam(questionCount = 10) {
 
 // 获取随机题目
 function getRandomQuestions(count) {
-    const shuffled = [...AppState.questions].sort(() => 0.5 - Math.random());
+    // 使用正确的Fisher-Yates洗牌算法
+    const shuffled = MathExamUtils.shuffleArray(AppState.questions);
     return shuffled.slice(0, count);
 }
 

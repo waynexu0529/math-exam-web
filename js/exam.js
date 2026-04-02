@@ -407,10 +407,22 @@ function goToPreviousQuestion() {
 
 // 下一题
 function goToNextQuestion() {
+    console.log('点击下一题，当前题号:', ExamState.currentQuestionIndex);
+    console.log('总题数:', ExamState.currentExam ? ExamState.currentExam.totalQuestions : '未初始化');
+    
+    if (!ExamState.currentExam) {
+        console.error('考试未初始化！');
+        alert('考试数据加载失败，请返回首页重新开始');
+        return;
+    }
+    
     if (ExamState.currentQuestionIndex < ExamState.currentExam.totalQuestions - 1) {
         ExamState.currentQuestionIndex++;
+        console.log('跳转到题号:', ExamState.currentQuestionIndex);
         loadQuestion(ExamState.currentQuestionIndex);
         updateProgress();
+    } else {
+        console.log('已是最后一题');
     }
 }
 
