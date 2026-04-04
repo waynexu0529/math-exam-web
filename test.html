@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>功能测试 - 三年级下册题库 + 碰撞测试</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .test-container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+        .test-section h2 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .test-result {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+        .success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .car-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .car-item {
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 6px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 功能测试页面</h1>
+        <p style="text-align: center; color: #666;">验证三年级下册题库 + 豪华赛车碰撞测试系统</p>
+
+        <!-- 测试1：题库加载 -->
+        <div class="test-section">
+            <h2>📚 测试1：三年级下册题库</h2>
+            <button onclick="testQuestionBank()">测试题库加载</button>
+            <div id="questionBankResult" class="test-result"></div>
+        </div>
+
+        <!-- 测试2：豪华赛车数据 -->
+        <div class="test-section">
+            <h2>🏎️ 测试2：豪华赛车数据</h2>
+            <button onclick="testLuxuryCars()">加载赛车数据</button>
+            <div id="luxuryCarsResult" class="test-result"></div>
+            <div id="carListDisplay" class="car-list"></div>
+        </div>
+
+        <!-- 测试3：碰撞测试模拟 -->
+        <div class="test-section">
+            <h2>💥 测试3：碰撞测试计算</h2>
+            <button onclick="testCollisionCalculation()">模拟碰撞测试</button>
+            <div id="collisionResult" class="test-result"></div>
+        </div>
+
+        <!-- 测试4：随机选车 -->
+        <div class="test-section">
+            <h2>🎲 测试4：随机选车功能</h2>
+            <button onclick="testRandomCars()">随机选3辆车</button>
+            <button onclick="testRandomCars2()">随机选5辆车</button>
+            <div id="randomCarsResult" class="test-result"></div>
+        </div>
+    </div>
+
+    <!-- 引入必要的脚本 -->
+    <script src="js/question-bank-grade3-2.js"></script>
+    <script src="js/enhanced-collision-test.js"></script>
+
+    <script>
+        // 测试题库加载
+        function testQuestionBank() {
+            const resultDiv = document.getElementById('questionBankResult');
+            try {
+                const questions = getGrade3Semester2QuestionBank();
+                const units = {
+                    'direction': '位置与方向',
+                    'division': '除法',
+                    'multiplication': '乘法',
+                    'area': '面积',
+                    'time': '年月日',
+                    'decimal': '小数',
+                    'combination': '搭配问题'
+                };
+                
+                let html = `<p class="success">✅ 题库加载成功！</p>`;
+                html += `<p><strong>题目总数：</strong>${questions.length} 道</p>`;
+                
+                // 统计各单元题目数量
+                const unitCount = {};
+                questions.forEach(q => {
+                    q.knowledgePoints.forEach(kp => {
+                        const unit = kp.split('_')[0];
+                        unitCount[unit] = (unitCount[unit] || 0) + 1;
+                    });
+                });
+                
+                html += `<p><strong>知识点分布：</strong></p><ul>`;
+                for (const [key, count] of Object.entries(unitCount)) {
+                    html += `<li>${units[key] || key}: ${count}题</li>`;
+                }
+                html += `</ul>`;
+                
+                // 显示前3道题作为示例
+                html += `<p><strong>示例题目（前3题）：</strong></p>`;
+                questions.slice(0, 3).forEach((q, i) => {
+                    html += `<p><strong>第${i+1}题：</strong>${q.content}</p>`;
+                });
+                
+                resultDiv.innerHTML = html;
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ 错误：${error.message}</p>`;
+            }
+        }
+
+        // 测试豪华赛车数据
+        function testLuxuryCars() {
+            const resultDiv = document.getElementById('luxuryCarsResult');
+            const carListDiv = document.getElementById('carListDisplay');
+            try {
+                const cars = LuxuryCars.cars;
+                let html = `<p class="success">✅ 赛车数据加载成功！</p>`;
+                html += `<p><strong>赛车总数：</strong>${cars.length} 辆</p>`;
+                
+                // 品牌统计
+                const brands = {};
+                cars.forEach(car => {
+                    brands[car.brand] = (brands[car.brand] || 0) + 1;
+                });
+                html += `<p><strong>品牌分布：</strong></p><ul>`;
+                for (const [brand, count] of Object.entries(brands)) {
+                    html += `<li>${brand}: ${count}辆</li>`;
+                }
+                html += `</ul>`;
+                
+                resultDiv.innerHTML = html;
+                
+                // 显示所有赛车
+                let carListHTML = '';
+                cars.forEach(car => {
+                    carListHTML += `
+                        <div class="car-item">
+                            <div style="font-size: 2em;">${car.icon}</div>
+                            <strong>${car.name}</strong><br>
+                            <small>${car.brand}</small><br>
+                            <small>${car.baseSpeed} km/h</small>
+                        </div>
+                    `;
+                });
+                carListDiv.innerHTML = carListHTML;
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ 错误：${error.message}</p>`;
+            }
+        }
+
+        // 测试碰撞计算
+        function testCollisionCalculation() {
+            const resultDiv = document.getElementById('collisionResult');
+            try {
+                // 模拟用户赛车
+                const testCar = {
+                    id: 'test_car',
+                    name: '测试赛车',
+                    brand: '七喜数学',
+                    baseSpeed: 280,
+                    baseSafety: 75,
+                    weight: 1200,
+                    icon: '🚗',
+                    color: '#1E90FF',
+                    description: '测试用赛车',
+                    isUserCar: true
+                };
+                
+                // 选择3辆随机豪车
+                const competitors = LuxuryCars.getRandomCars(3);
+                const allCars = [testCar, ...competitors];
+                
+                // 计算碰撞结果
+                const results = calculateEnhancedCollisionResults(allCars);
+                
+                let html = `<p class="success">✅ 碰撞测试计算成功！</p>`;
+                html += `<p><strong>参与车辆：</strong>${results.length} 辆</p>`;
+                html += `<p><strong>测试结果：</strong></p><ul>`;
+                results.forEach((result, i) => {
+                    const rank = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i+1}`;
+                    html += `<li>${rank} ${result.car.name} - 安全得分: ${result.safetyScore}/100 (${result.safetyRating})</li>`;
+                });
+                html += `</ul>`;
+                
+                resultDiv.innerHTML = html;
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ 错误：${error.message}</p>`;
+            }
+        }
+
+        // 测试随机选车
+        function testRandomCars() {
+            const resultDiv = document.getElementById('randomCarsResult');
+            try {
+                const cars = LuxuryCars.getRandomCars(3);
+                let html = `<p class="success">✅ 随机选择3辆车</p><ul>`;
+                cars.forEach(car => {
+                    html += `<li>${car.icon} ${car.name} (${car.brand})</li>`;
+                });
+                html += `</ul>`;
+                resultDiv.innerHTML = html;
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ 错误：${error.message}</p>`;
+            }
+        }
+
+        function testRandomCars2() {
+            const resultDiv = document.getElementById('randomCarsResult');
+            try {
+                const cars = LuxuryCars.getRandomCars(5);
+                let html = `<p class="success">✅ 随机选择5辆车</p><ul>`;
+                cars.forEach(car => {
+                    html += `<li>${car.icon} ${car.name} (${car.brand})</li>`;
+                });
+                html += `</ul>`;
+                resultDiv.innerHTML = html;
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ 错误：${error.message}</p>`;
+            }
+        }
+
+        // 页面加载时自动运行基础测试
+        window.addEventListener('DOMContentLoaded', () => {
+            testQuestionBank();
+            testLuxuryCars();
+        });
+    </script>
+</body>
+</html>
