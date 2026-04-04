@@ -251,10 +251,10 @@ function bindRaceAndTestEvents() {
         startRaceBtn.addEventListener('click', startRace);
     }
     
-    // 碰撞测试按钮
+    // 碰撞测试按钮 - 使用增强版
     const startCollisionTestBtn = document.getElementById('startCollisionTestBtn');
     if (startCollisionTestBtn) {
-        startCollisionTestBtn.addEventListener('click', startCollisionTest);
+        startCollisionTestBtn.addEventListener('click', startEnhancedCollisionTest);
     }
 }
 

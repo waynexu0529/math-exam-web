@@ -119,11 +119,14 @@ function createNewExam(questionCount) {
     localStorage.setItem('currentExam', JSON.stringify(ExamState.currentExam));
 }
 
-// 获取题库
+// 获取题库（三年级下册）
 function getQuestionBank() {
-    // 这里应该从主应用加载题库
-    // 暂时使用硬编码的题目
-    return [
+    // 检查是否已加载三年级下册题库
+    if (typeof getGrade3Semester2QuestionBank === 'function') {
+        return getGrade3Semester2QuestionBank();
+    }
+    // 默认题库作为后备
+    return [];
         {
             id: 1,
             type: 'single_choice',
