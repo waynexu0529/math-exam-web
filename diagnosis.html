@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 诊断 - 题库加载检查</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .success {
+            color: #28a745;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .question-sample {
+            background: #f8f9fa;
+            padding: 15px;
+            border-left: 4px solid #007bff;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🔍 题库加载诊断</h1>
+        <p style="text-align: center; color: #666;">检查三年级下册题库是否正常加载</p>
+        
+        <div id="diagnosis"></div>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <button onclick="runDiagnosis()">🔄 重新诊断</button>
+            <button onclick="window.location.href='exam.html'">📝 前往考试</button>
+        </div>
+    </div>
+
+    <!-- 引入题库 -->
+    <script src="js/question-bank-grade3-2.js"></script>
+    <script src="js/exam.js"></script>
+
+    <script>
+        function runDiagnosis() {
+            const diagDiv = document.getElementById('diagnosis');
+            let html = '';
+
+            // 检查1：题库文件是否加载
+            html += '<h3>步骤1：检查题库文件</h3>';
+            if (typeof getGrade3Semester2QuestionBank === 'function') {
+                html += '<p class="success">✅ question-bank-grade3-2.js 加载成功</p>';
+            } else {
+                html += '<p class="error">❌ question-bank-grade3-2.js 未加载</p>';
+                diagDiv.innerHTML = html;
+                return;
+            }
+
+            // 检查2：题库函数是否正常
+            html += '<h3>步骤2：调用题库函数</h3>';
+            try {
+                const questions = getGrade3Semester2QuestionBank();
+                html += `<p class="success">✅ 题库函数调用成功</p>`;
+                html += `<div class="info">题目总数: <strong>${questions.length}</strong> 道</div>`;
+                
+                if (questions.length === 0) {
+                    html += '<p class="error">⚠️ 警告：题库为空！</p>';
+                    diagDiv.innerHTML = html;
+                    return;
+                }
+            } catch (e) {
+                html += `<p class="error">❌ 题库函数调用失败: ${e.message}</p>`;
+                diagDiv.innerHTML = html;
+                return;
+            }
+
+            // 检查3：exam.js 的 getQuestionBank 函数
+            html += '<h3>步骤3：检查 exam.js 集成</h3>';
+            if (typeof getQuestionBank === 'function') {
+                html += '<p class="success">✅ exam.js 已加载</p>';
+                
+                try {
+                    const examQuestions = getQuestionBank();
+                    if (examQuestions.length > 0) {
+                        html += `<p class="success">✅ exam.js 成功调用题库（${examQuestions.length}题）</p>`;
+                        
+                        // 显示第一题作为示例
+                        html += '<h3>题目示例（第1题）</h3>';
+                        const q = examQuestions[0];
+                        html += `
+                            <div class="question-sample">
+                                <p><strong>题目：</strong>${q.content}</p>
+                                <p><strong>选项：</strong></p>
+                                <ul>
+                                    ${q.options.map(opt => `<li>${opt.id}. ${opt.text}</li>`).join('')}
+                                </ul>
+                                <p><strong>正确答案：</strong>${q.correctAnswer}</p>
+                                <p><strong>解析：</strong>${q.explanation}</p>
+                            </div>
+                        `;
+                    } else {
+                        html += '<p class="error">❌ exam.js 返回空数组</p>';
+                    }
+                } catch (e) {
+                    html += `<p class="error">❌ exam.js 调用失败: ${e.message}</p>`;
+                }
+            } else {
+                html += '<p class="error">❌ exam.js 未加载或 getQuestionBank 函数不存在</p>';
+            }
+
+            // 检查4：统计信息
+            html += '<h3>步骤4：题库详细信息</h3>';
+            try {
+                const questions = getGrade3Semester2QuestionBank();
+                
+                // 难度分布
+                const difficulties = { easy: 0, medium: 0, hard: 0 };
+                questions.forEach(q => {
+                    difficulties[q.difficulty] = (difficulties[q.difficulty] || 0) + 1;
+                });
+                
+                html += `
+                    <div class="info">
+                        <p><strong>难度分布：</strong></p>
+                        <ul>
+                            <li>简单题：${difficulties.easy || 0} 道</li>
+                            <li>中等题：${difficulties.medium || 0} 道</li>
+                            <li>困难题：${difficulties.hard || 0} 道</li>
+                        </ul>
+                    </div>
+                `;
+                
+                // 知识点统计
+                const knowledgePoints = {};
+                questions.forEach(q => {
+                    q.knowledgePoints.forEach(kp => {
+                        knowledgePoints[kp] = (knowledgePoints[kp] || 0) + 1;
+                    });
+                });
+                
+                html += `
+                    <div class="info">
+                        <p><strong>知识点分布：</strong></p>
+                        <ul>
+                            ${Object.entries(knowledgePoints).map(([kp, count]) => 
+                                `<li>${kp}: ${count}题</li>`
+                            ).join('')}
+                        </ul>
+                    </div>
+                `;
+                
+                html += '<p class="success">🎉 所有检查通过！题库工作正常！</p>';
+            } catch (e) {
+                html += `<p class="error">❌ 统计信息获取失败: ${e.message}</p>`;
+            }
+
+            diagDiv.innerHTML = html;
+        }
+
+        // 页面加载时自动运行诊断
+        window.addEventListener('DOMContentLoaded', runDiagnosis);
+    </script>
+</body>
+</html>

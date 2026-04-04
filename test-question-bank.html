@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>测试题库加载</title>
+</head>
+<body>
+    <h1>测试题库加载</h1>
+    <div id="result"></div>
+    
+    <script src="js/question-bank-grade3-2.js"></script>
+    <script>
+        const resultDiv = document.getElementById('result');
+        try {
+            if (typeof getGrade3Semester2QuestionBank === 'function') {
+                const questions = getGrade3Semester2QuestionBank();
+                resultDiv.innerHTML = `
+                    <p style="color: green;">✅ 题库加载成功！</p>
+                    <p>题目总数: ${questions.length}</p>
+                    <p>第一题: ${questions[0].content}</p>
+                `;
+            } else {
+                resultDiv.innerHTML = '<p style="color: red;">❌ 函数不存在</p>';
+            }
+        } catch (e) {
+            resultDiv.innerHTML = `<p style="color: red;">❌ 错误: ${e.message}</p>`;
+        }
+    </script>
+</body>
+</html>
